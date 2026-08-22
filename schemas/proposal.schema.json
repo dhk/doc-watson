@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/dhk/doc-watson/schemas/proposal.schema.json",
+  "title": "Doc Watson documentation proposal",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "standardVersion",
+    "level",
+    "approved",
+    "documents",
+    "questions"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "1.0" },
+    "standardVersion": { "const": "draft-1" },
+    "level": { "type": "integer", "minimum": 0, "maximum": 3 },
+    "approved": { "type": "boolean", "default": false },
+    "documents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "purpose", "content", "claims"],
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+          },
+          "purpose": { "type": "string", "minLength": 1 },
+          "content": { "type": "string" },
+          "claims": {
+            "type": "array",
+            "items": { "$ref": "provenance.schema.json" }
+          }
+        }
+      }
+    },
+    "questions": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    }
+  }
+}

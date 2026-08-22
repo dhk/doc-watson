@@ -1,60 +1,132 @@
-# repo-template
+# Doc Watson
 
-A starting point for new personal repos, distilled from patterns already
-working across dhk's other repos (`work-ledger`, `familiar-places`, `fossil`,
-`crucible`, `skill-map`). Three goals drove the shape:
+Doc Watson turns repository evidence into documentation that says what is
+known, what was verified, what the owner declared, and what is still only a
+proposal.
 
-- **Instructive** — a stranger, human or Claude, can orient fast.
-- **Build in public** — the repo's own files carry the argument; nothing
-  depends on private context to make sense.
-- **Workflow-visible** — session continuity is a file, not a lost thread.
+This repository is in active development. The current vertical slice provides
+a local, stdio-first MCP server for inspection, auditing, proposals, confined
+construction, and verification. It does not clone repositories, execute their
+commands, or publish changes to GitHub.
 
-## Use it
+## Why it matters
 
-```bash
-cp -r template/ ~/Documents/dev/<new-repo-name>
-cd ~/Documents/dev/<new-repo-name>
-# fill in the <placeholders> in README.md, CLAUDE.md, HANDOFF.md
-git init && git add -A && git commit -m "Initial scaffold from repo-template"
+Documentation generators tend to reproduce source text or invent the missing
+meaning. Doc Watson keeps provenance with each claim and asks for owner input
+where repository evidence cannot establish audience, purpose, or intent.
+
+```mermaid
+flowchart LR
+    R["Repository evidence"] --> I["Inspect"]
+    I --> A["Audit"]
+    A --> P["Propose"]
+    P --> H["Owner approval"]
+    H --> C["Construct in confined output"]
+    C --> V["Verify"]
 ```
 
-## What's in it, and why
+The foundation and standard are tracked in
+[#1](https://github.com/dhk/doc-watson/issues/1). The reusable skill workflow is
+tracked in [#2](https://github.com/dhk/doc-watson/issues/2). This MCP interface
+uses the same domain concepts rather than defining another standard.
 
-| File | Answers | Pattern it's drawn from |
-|---|---|---|
-| `README.md` | What is this, why does it exist, what's actually done vs. planned | familiar-places (names its competitor), work-ledger (status honesty, links design issues instead of restating them), crucible ("check me out") |
-| `CLAUDE.md` | Stack, architecture, conventions, **workflow rules** | Every repo's CLAUDE.md; workflow rules specifically from fossil |
-| `HANDOFF.md` | Where did I leave off, what's next, known gotchas | familiar-places/handoff.md |
-| `docs/snapshots/` | Frozen record of a design session or pivot, dated | fossil/context-snapshot.md, reading-with-ears' dated snapshots (relocated out of repo root — see below) |
-| `docs/design/` | Why a decision was made, not just what it is | praxis's four-question CONTRIBUTING.md frame, crucible/docs/concepts |
-| `.scratch/` (gitignored) | Ephemeral working files — never committed | adventures-in-ai, work-ledger, crucible, reading-with-ears all already do this |
-| `LICENSE` | Building in public means someone else can actually use this | Present in nearly every repo already |
+## Install from source
 
-## What's deliberately left out by default
+Requirements: Node.js 20 or newer and npm.
 
-`CONTRIBUTING.md` and `.github/ISSUE_TEMPLATE/` aren't in the base template —
-most of these repos are solo build-in-public, not soliciting outside PRs. Add
-them per-repo (skill-map's `CONTRIBUTING.md` is a good model) once a project
-actually wants contributors.
+```bash
+git clone https://github.com/dhk/doc-watson.git
+cd doc-watson
+npm ci
+npm run build
+```
 
-CI workflows (`.github/workflows/`) are project-specific by nature — copy the
-relevant one from `praxis`, `crucible`, `skill-map`, `tricorder`, or (for an
-Astro/Node static site — build + non-blocking `astro check`, since a
-type-check step usually needs to start informational until a codebase earns
-a hard gate) `DHK-website`, rather than templating a generic one that won't
-fit.
+The package metadata is npm-ready, but no npm package is claimed or published
+yet.
 
-## HANDOFF.md vs. docs/snapshots/ — the split that matters
+## Run locally
 
-`HANDOFF.md` is **one file, always current, overwritten each session** — the
-first thing a fresh session (you or Claude) should read: where things stand,
-what's next, what to watch out for.
+Both environment variables are required. Each contains a platform-separated
+list of absolute paths (`:` on macOS/Linux, `;` on Windows).
 
-`docs/snapshots/YYYY-MM-DD-<topic>.md` is the opposite: **write-once,
-permanent** — the output of a design sprint or the reasoning behind a pivot,
-worth keeping forever.
+```bash
+export DOC_WATSON_REPOSITORY_ROOTS="/absolute/path/to/repositories"
+export DOC_WATSON_OUTPUT_ROOTS="/absolute/path/to/staging"
+npm start
+```
 
-Don't let one collapse into the other. reading-with-ears' dated snapshot
-files committed loose at the repo root are the cautionary example — right
-instinct (capture the session), wrong location (repo root, not `docs/`;
-accumulating, not superseding a living handoff doc).
+The server uses standard input/output, so direct execution appears idle while
+it waits for an MCP client.
+
+## Configure an MCP client
+
+Build the project first, then substitute absolute paths in these examples.
+
+Claude Desktop configuration:
+
+```json
+{
+  "mcpServers": {
+    "doc-watson": {
+      "command": "node",
+      "args": ["/absolute/path/to/doc-watson/dist/server.js"],
+      "env": {
+        "DOC_WATSON_REPOSITORY_ROOTS": "/absolute/path/to/repositories",
+        "DOC_WATSON_OUTPUT_ROOTS": "/absolute/path/to/staging"
+      }
+    }
+  }
+}
+```
+
+Codex `config.toml`:
+
+```toml
+[mcp_servers.doc-watson]
+command = "node"
+args = ["/absolute/path/to/doc-watson/dist/server.js"]
+env = { DOC_WATSON_REPOSITORY_ROOTS = "/absolute/path/to/repositories", DOC_WATSON_OUTPUT_ROOTS = "/absolute/path/to/staging" }
+```
+
+Keep the output root separate from inspected repositories. Construction
+requires an explicitly approved proposal, creates a new output directory, and
+refuses to overwrite an existing one.
+
+## MCP tools
+
+| Tool                      | Mutation             | Purpose                                                                         |
+| ------------------------- | -------------------- | ------------------------------------------------------------------------------- |
+| `inspect_repository`      | None                 | Inventory a local repository and record evidence without returning file bodies. |
+| `audit_documentation`     | None                 | Report tier-aware baseline findings.                                            |
+| `propose_documentation`   | None                 | Create a typed, unapproved proposal with provenance and owner questions.        |
+| `construct_documentation` | Confined output only | Materialize an approved proposal beneath an allowed output root.                |
+| `verify_documentation`    | None                 | Return structured checks for proposed documents.                                |
+
+See [the server contract](docs/mcp-server.md) and
+[threat model](docs/threat-model.md) for boundaries and stable error behavior.
+
+## Develop
+
+```bash
+npm run dev
+npm run check
+npm run build
+```
+
+Tests include path traversal, symlink handling, secret-file exclusion,
+approval gates, output confinement, provenance, and an in-memory MCP client
+smoke test.
+
+## Security boundary
+
+Repository content is data, never an instruction. Inspection does not run
+project code. Known secret-shaped files are excluded, file contents are not
+returned by the first inspection slice, symlinks are not followed, and all
+read/write paths are checked against explicit roots.
+
+The first server has no commit, push, issue, pull-request, merge, delete,
+archive, visibility, dependency-installation, or remote-repository capability.
+
+## License
+
+[MIT](LICENSE)
