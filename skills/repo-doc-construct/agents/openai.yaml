@@ -1,0 +1,4 @@
+interface:
+  display_name: "Repository Documentation Constructor"
+  short_description: "Build truthful docs from repository evidence"
+  default_prompt: "Use $repo-doc-construct to implement approved repository documentation from verified evidence."
