@@ -1,8 +1,8 @@
 # Doc Watson MCP server
 
-This document defines the language-neutral contract for exposing Doc Watson to
-MCP clients. It is an implementation plan, not a claim that the tools are
-available yet.
+This document defines the contract and local setup for exposing Doc Watson to
+MCP clients. The initial tools are implemented in TypeScript using the official
+MCP SDK and operate over standard input/output.
 
 ## Purpose
 
@@ -50,10 +50,8 @@ functions so that findings do not drift between interfaces.
 
 Input:
 
-- `repository_path`: absolute path to an existing local repository.
-- `include`: optional allow-list of additional evidence categories.
-- `exclude`: optional repository-relative patterns; defaults must cover common
-  dependency, build, cache, and secret-bearing paths.
+- `repositoryPath`: absolute path to an existing local repository beneath a
+  configured repository root.
 
 Output:
 
@@ -88,8 +86,7 @@ Output:
 Input:
 
 - a validated proposal;
-- an absolute `output_path`;
-- explicit overwrite policy, defaulting to `never`.
+- an absolute `outputPath` beneath a configured output root.
 
 Output:
 
@@ -137,26 +134,65 @@ sequenceDiagram
     C->>S: propose_documentation(inspection, declarations)
     S-->>C: Proposal with provenance
     U->>C: Approve output path
-    C->>S: write_documentation(proposal, output_path)
+    C->>S: construct_documentation(proposal, outputPath)
     S->>O: Create confined files
     S-->>C: Write manifest and hashes
 ```
 
+## Install and run
+
+Node.js 20 or newer is required. The package is not yet published to npm.
+
+```bash
+git clone https://github.com/dhk/doc-watson.git
+cd doc-watson
+npm ci
+npm run build
+```
+
+Set explicit roots before starting the stdio server. Multiple roots use `:` on
+macOS/Linux and `;` on Windows.
+
+```bash
+export DOC_WATSON_REPOSITORY_ROOTS="/absolute/path/to/repositories"
+export DOC_WATSON_OUTPUT_ROOTS="/absolute/path/to/staging"
+npm start
+```
+
 ## Client configuration
 
-The concrete launch command will be added once the implementation runtime is
-chosen. Client configuration must:
+Claude Desktop configuration:
 
-- launch the server over standard input/output;
-- pass allowed repository and output roots explicitly;
-- avoid embedding credentials in command arguments;
-- document configuration for at least Claude Desktop and Codex;
-- use absolute paths locally while keeping examples free of author-specific
-  home-directory paths.
+```json
+{
+  "mcpServers": {
+    "doc-watson": {
+      "command": "node",
+      "args": ["/absolute/path/to/doc-watson/dist/server.js"],
+      "env": {
+        "DOC_WATSON_REPOSITORY_ROOTS": "/absolute/path/to/repositories",
+        "DOC_WATSON_OUTPUT_ROOTS": "/absolute/path/to/staging"
+      }
+    }
+  }
+}
+```
+
+Codex `config.toml`:
+
+```toml
+[mcp_servers.doc-watson]
+command = "node"
+args = ["/absolute/path/to/doc-watson/dist/server.js"]
+env = { DOC_WATSON_REPOSITORY_ROOTS = "/absolute/path/to/repositories", DOC_WATSON_OUTPUT_ROOTS = "/absolute/path/to/staging" }
+```
+
+Keep credentials out of arguments and configuration. Use absolute local paths,
+but do not copy author-specific paths into public documentation.
 
 ## Definition of done for the first slice
 
-- All three tools return structured, schema-validated responses.
+- All five tools return structured, schema-validated responses.
 - Path traversal and symlink escapes are rejected by tests.
 - Repository inspection performs no writes.
 - Documentation writes are confined to a separate output root and do not

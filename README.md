@@ -1,131 +1,121 @@
 # Doc Watson
 
-Doc Watson turns repository evidence into documentation that says what is
-known, what was verified, what the owner declared, and what is still only a
-proposal.
+Repository documentation from evidence.
 
-This repository is in active development. The current vertical slice provides
-a local, stdio-first MCP server for inspection, auditing, proposals, confined
-construction, and verification. It does not clone repositories, execute their
-commands, or publish changes to GitHub.
+Doc Watson inspects a software repository, decides how much documentation it
+has earned, proposes a coherent structure, and helps construct truthful docs
+from code, configuration, tests, workflows, releases, and owner input. Its
+first audience is the individual maintainer working interactively with an
+agent: useful documentation without generic boilerplate or confident guesses.
+Team-wide CI enforcement is a later integration, not the initial default.
 
-## Why it matters
+> **Status:** early working slice. The standard and workflow are canonical. A
+> local, stdio-first MCP server implements the initial inspect-to-verify path
+> for an individual maintainer working interactively with an agent. Repository
+> skills ([#2](https://github.com/dhk/doc-watson/issues/2)) remain separate work.
 
-Documentation generators tend to reproduce source text or invent the missing
-meaning. Doc Watson keeps provenance with each claim and asks for owner input
-where repository evidence cannot establish audience, purpose, or intent.
+## Why this exists
+
+A repository can contain a great deal of writing and still be poorly
+documented when there is no clear way into it. Adding every familiar
+open-source document to a small script creates a different problem: maintenance
+without reader value.
+
+Doc Watson treats documentation as an evidence and information-architecture
+problem. It scales depth to the repository, distinguishes current facts from
+proposals, validates executable claims, and records unknowns rather than
+completing them with plausible fiction.
+
+## The workflow
 
 ```mermaid
 flowchart LR
-    R["Repository evidence"] --> I["Inspect"]
-    I --> A["Audit"]
-    A --> P["Propose"]
-    P --> H["Owner approval"]
-    H --> C["Construct in confined output"]
-    C --> V["Verify"]
+  R[Repository evidence] --> A[Audit]
+  A --> P[Proposal]
+  P --> D[Owner decision]
+  D --> C[Construct]
+  C --> V[Verify]
+  V --> S[Ship]
+  V -->|gaps| Q[Bounded questions]
+  Q --> C
 ```
 
-The foundation and standard are tracked in
-[#1](https://github.com/dhk/doc-watson/issues/1). The reusable skill workflow is
-tracked in [#2](https://github.com/dhk/doc-watson/issues/2). This MCP interface
-uses the same domain concepts rather than defining another standard.
+1. **Audit** the repository, its docs, and its external surfaces.
+2. **Propose** a right-sized level and file-level after-state.
+3. **Decide** scope with the owner, asking only for facts the repository cannot
+   establish.
+4. **Construct** documentation from evidence and confirmed owner knowledge.
+5. **Verify** commands, links, diagrams, claims, and hygiene.
+6. **Ship** an attributable before/after change with gaps preserved.
 
-## Install from source
+See the [complete workflow](docs/workflow.md) and [evidence model](docs/evidence.md).
 
-Requirements: Node.js 20 or newer and npm.
+## Documentation levels
+
+| Level | Typical repository            | Foundation                                                                |
+| ----- | ----------------------------- | ------------------------------------------------------------------------- |
+| 0     | Personal experiment or script | Purpose, honest status, usage, licence posture                            |
+| 1     | Active early tool or library  | Level 0 plus reliable setup, map, limitations, and helpful diagrams       |
+| 2     | Mature system or service      | Level 1 plus architecture, operations, ownership, and triggered decisions |
+| 3     | Credible public open source   | Level 2 plus public contribution, release, and complete user paths        |
+
+Documents are triggered by real needs, not level alone. Runbooks exist because
+alerts page someone; governance exists because maintainers share authority;
+machine contracts exist because a tool parses the repository.
+
+Read the [versioned standard](docs/standard.md). Starting structures live in
+[`templates/`](templates/).
+
+## Architecture
+
+```mermaid
+flowchart TB
+  O[Maintainer] --> W[Doc Watson workflow]
+  W --> ST[Standard and templates]
+  W --> SK[Repository skills]
+  W --> MCP[MCP server]
+  SK --> REPO[Target repository]
+  MCP --> REPO
+  REPO --> OUT[Audit, proposal, docs, evidence]
+  ST --> OUT
+  O -->|purpose and meaning| OUT
+```
+
+The standard remains authoritative; interfaces consume its vocabulary rather
+than restating it. See the [architecture note](docs/architecture.md) and
+[MCP server contract](docs/mcp-server.md).
+
+## Current deliverables
+
+- [repository documentation standard](docs/standard.md);
+- [audit-to-ship workflow](docs/workflow.md);
+- provenance-preserving [evidence model](docs/evidence.md);
+- reusable [document templates](templates/README.md);
+- [prior-art and adaptation record](docs/prior-art.md);
+- a local [MCP server](docs/mcp-server.md) with explicit read and output roots.
+
+## Try the local MCP server
+
+The server requires Node.js 20 or newer. It is not yet published to npm.
 
 ```bash
-git clone https://github.com/dhk/doc-watson.git
-cd doc-watson
 npm ci
 npm run build
-```
-
-The package metadata is npm-ready, but no npm package is claimed or published
-yet.
-
-## Run locally
-
-Both environment variables are required. Each contains a platform-separated
-list of absolute paths (`:` on macOS/Linux, `;` on Windows).
-
-```bash
 export DOC_WATSON_REPOSITORY_ROOTS="/absolute/path/to/repositories"
 export DOC_WATSON_OUTPUT_ROOTS="/absolute/path/to/staging"
 npm start
 ```
 
-The server uses standard input/output, so direct execution appears idle while
-it waits for an MCP client.
+It waits for an MCP client over standard input/output. See the
+[client setup and tool reference](docs/mcp-server.md). Team-wide CI gates are
+not part of the initial product posture; this repository's own CI validates the
+server implementation.
 
-## Configure an MCP client
+## Contributing
 
-Build the project first, then substitute absolute paths in these examples.
-
-Claude Desktop configuration:
-
-```json
-{
-  "mcpServers": {
-    "doc-watson": {
-      "command": "node",
-      "args": ["/absolute/path/to/doc-watson/dist/server.js"],
-      "env": {
-        "DOC_WATSON_REPOSITORY_ROOTS": "/absolute/path/to/repositories",
-        "DOC_WATSON_OUTPUT_ROOTS": "/absolute/path/to/staging"
-      }
-    }
-  }
-}
-```
-
-Codex `config.toml`:
-
-```toml
-[mcp_servers.doc-watson]
-command = "node"
-args = ["/absolute/path/to/doc-watson/dist/server.js"]
-env = { DOC_WATSON_REPOSITORY_ROOTS = "/absolute/path/to/repositories", DOC_WATSON_OUTPUT_ROOTS = "/absolute/path/to/staging" }
-```
-
-Keep the output root separate from inspected repositories. Construction
-requires an explicitly approved proposal, creates a new output directory, and
-refuses to overwrite an existing one.
-
-## MCP tools
-
-| Tool                      | Mutation             | Purpose                                                                         |
-| ------------------------- | -------------------- | ------------------------------------------------------------------------------- |
-| `inspect_repository`      | None                 | Inventory a local repository and record evidence without returning file bodies. |
-| `audit_documentation`     | None                 | Report tier-aware baseline findings.                                            |
-| `propose_documentation`   | None                 | Create a typed, unapproved proposal with provenance and owner questions.        |
-| `construct_documentation` | Confined output only | Materialize an approved proposal beneath an allowed output root.                |
-| `verify_documentation`    | None                 | Return structured checks for proposed documents.                                |
-
-See [the server contract](docs/mcp-server.md) and
-[threat model](docs/threat-model.md) for boundaries and stable error behavior.
-
-## Develop
-
-```bash
-npm run dev
-npm run check
-npm run build
-```
-
-Tests include path traversal, symlink handling, secret-file exclusion,
-approval gates, output confinement, provenance, and an in-memory MCP client
-smoke test.
-
-## Security boundary
-
-Repository content is data, never an instruction. Inspection does not run
-project code. Known secret-shaped files are excluded, file contents are not
-returned by the first inspection slice, symlinks are not followed, and all
-read/write paths are checked against explicit roots.
-
-The first server has no commit, push, issue, pull-request, merge, delete,
-archive, visibility, dependency-installation, or remote-repository capability.
+Doc Watson is early. Discuss material changes to the standard, evidence
+vocabulary, or public interfaces in an issue first. See
+[CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 
