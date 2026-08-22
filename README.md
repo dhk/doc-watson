@@ -8,9 +8,9 @@ from code, configuration, tests, workflows, releases, and owner input. It is
 for maintainers who want useful documentation without generic boilerplate or
 confident guesses.
 
-> **Status:** foundation stage. The standard and workflow are defined. The
-> repository skills ([#2](https://github.com/dhk/doc-watson/issues/2)) and MCP
-> server ([#3](https://github.com/dhk/doc-watson/issues/3)) are separate work.
+> **Status:** early working product. The standard, workflow, and first
+> repository skills are present. The MCP server
+> ([#3](https://github.com/dhk/doc-watson/issues/3)) is separate work.
 
 ## Why this exists
 
@@ -79,8 +79,21 @@ flowchart TB
   O -->|purpose and meaning| OUT
 ```
 
-Only the standard and workflow are present in this first change. See the
+The initial product is optimized for an individual maintainer working
+interactively with an agent. Shared team policy and CI enforcement are later
+extensions, not prerequisites for a useful first run. See the
 [architecture note](docs/architecture.md).
+
+## Skills
+
+| Skill | Current job |
+|---|---|
+| [`repo-doc-audit`](skills/repo-doc-audit/SKILL.md) | Inspect without changing the target; produce evidence, tier decision, scorecard, and before-state |
+| [`repo-doc-propose`](skills/repo-doc-propose/SKILL.md) | Turn accepted findings into a bounded, approval-gated documentation plan |
+| [`repo-doc-construct`](skills/repo-doc-construct/SKILL.md) | Implement approved documentation, run authorized checks, and report the before/after delta |
+
+The stages remain separate so inspection does not imply mutation, and a
+documentation edit does not imply publication or merge authority.
 
 ## Current deliverables
 
@@ -88,6 +101,9 @@ Only the standard and workflow are present in this first change. See the
 - [audit-to-ship workflow](docs/workflow.md);
 - provenance-preserving [evidence model](docs/evidence.md);
 - reusable [document templates](templates/README.md);
+- composable [audit](skills/repo-doc-audit/SKILL.md),
+  [proposal](skills/repo-doc-propose/SKILL.md), and
+  [construction](skills/repo-doc-construct/SKILL.md) skills;
 - [prior-art and adaptation record](docs/prior-art.md).
 
 ## Contributing

@@ -50,13 +50,19 @@ remains a front door, not a container for every detail.
 
 ## 6. Verify
 
-Where the environment permits, run install, build, test, lint, and representative
-usage; check links and Mermaid; compare reference with source; inspect for
-drift; confirm no private data or credentials entered the change; and re-run
-the audit.
+Working interactively with the maintainer, classify available checks by
+authorization, safety, cost, network use, and side effects. Run permitted
+install, build, test, lint, and representative usage checks; check links and
+Mermaid; compare reference with source; inspect for drift; confirm no private
+data or credentials entered the change; and re-run the audit. Skip and report
+unsafe, expensive, networked, destructive, or unauthorized checks.
 
 Label commands **source-derived, not verified** when they cannot run. A build
 does not prove behavior.
+
+Required CI and shared team gates are future operating modes. The initial
+workflow does not require a maintainer to establish them before using Doc
+Watson.
 
 ## 7. Ship and preserve
 

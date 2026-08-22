@@ -3,8 +3,10 @@
 ## Purpose
 
 Doc Watson turns repository evidence and bounded owner input into right-sized,
-truthful documentation. The foundation docs are the current product surface;
-skills and an MCP server are separate work in issues #2 and #3.
+truthful documentation. The foundation docs and repository skills are the
+current product surface; an MCP server is separate work in issue #3. Optimize
+the initial workflow for an individual maintainer working interactively with
+an agent. Treat team policy and CI enforcement as later extensions.
 
 ## Start every task
 
