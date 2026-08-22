@@ -14,9 +14,9 @@
 
 ## Authority and consolidation
 
-| Subject   | Canonical source after change | Content retired or linked |
-| --------- | ----------------------------- | ------------------------- |
-| [subject] | [path/URL]                    | [path/URL]                |
+| Subject | Canonical source after change | Content retired or linked |
+|---|---|---|
+| [subject] | [path/URL] | [path/URL] |
 
 ## Validation plan
 

@@ -2,13 +2,13 @@
 
 Every material claim has one of these states during the Doc Watson workflow.
 
-| State        | Meaning                                             | Suitable evidence                                        |
-| ------------ | --------------------------------------------------- | -------------------------------------------------------- |
-| **Observed** | Present in an identified source                     | Code, config, tests, workflows, history, releases, docs  |
-| **Verified** | Successfully exercised in the audit environment     | Recorded command, result, environment, revision          |
-| **Declared** | Confirmed by an authorized owner                    | Attributed answer, issue comment, policy, durable record |
-| **Proposed** | Recommended future state, not implemented           | Approved proposal or open issue                          |
-| **Unknown**  | Available evidence cannot establish a material fact | Bounded question naming its consequence and owner        |
+| State | Meaning | Suitable evidence |
+|---|---|---|
+| **Observed** | Present in an identified source | Code, config, tests, workflows, history, releases, docs |
+| **Verified** | Successfully exercised in the audit environment | Recorded command, result, environment, revision |
+| **Declared** | Confirmed by an authorized owner | Attributed answer, issue comment, policy, durable record |
+| **Proposed** | Recommended future state, not implemented | Approved proposal or open issue |
+| **Unknown** | Available evidence cannot establish a material fact | Bounded question naming its consequence and owner |
 
 These describe provenance, not confidence. A repository fact may be observed
 but not explain why it exists. A source-derived command remains unverified

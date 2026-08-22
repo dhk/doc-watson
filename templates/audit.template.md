@@ -21,15 +21,15 @@ Treat this repository as **Level [0–3]** because [evidence-backed rationale].
 
 ## Scorecard
 
-| Concern                    | Before | Proposed | Evidence |
-| -------------------------- | -----: | -------: | -------- |
-| Purpose and audience       |      0 |        0 |          |
-| Status and limitations     |      0 |        0 |          |
-| Installation and first use |      0 |        0 |          |
-| Architecture and “so what” |      0 |        0 |          |
-| Safety and operations      |      0 |        0 |          |
-| Ownership and licence      |      0 |        0 |          |
-| Navigation and hygiene     |      0 |        0 |          |
+| Concern | Before | Proposed | Evidence |
+|---|---:|---:|---|
+| Purpose and audience | 0 | 0 | |
+| Status and limitations | 0 | 0 | |
+| Installation and first use | 0 | 0 | |
+| Architecture and “so what” | 0 | 0 | |
+| Safety and operations | 0 | 0 | |
+| Ownership and licence | 0 | 0 | |
+| Navigation and hygiene | 0 | 0 | |
 
 Use 0 = absent, 1 = partial, 2 = fit. Adapt concerns to real triggers.
 

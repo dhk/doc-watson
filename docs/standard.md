@@ -22,22 +22,22 @@ is the default unless repository evidence supports an exception.
 
 ## Levels
 
-| Concern                | Level 0 — experiment | Level 1 — active early                       | Level 2 — mature system                 | Level 3 — public OSS                                    |
-| ---------------------- | -------------------- | -------------------------------------------- | --------------------------------------- | ------------------------------------------------------- |
-| README                 | Minimal              | Standard                                     | Standard                                | Public-facing                                           |
-| Licence posture        | Explicit             | Explicit                                     | Explicit                                | Licence file required                                   |
-| Install                | One truthful path    | Reliable common path                         | Complete supported paths                | Published, direct/source, careful paths where available |
-| Usage                  | One example          | First successful outcome                     | Core workflows                          | User guides and examples                                |
-| Status and limits      | Required             | Required                                     | Required                                | Required, including support posture                     |
-| Repository map         | If non-obvious       | If multi-part                                | Required                                | Required                                                |
-| “So what”              | One sentence         | Required                                     | Required                                | Required                                                |
-| Architecture           | If helpful           | One useful context/flow                      | Context and containers                  | As needed; avoid code mirrors                           |
-| Security/privacy       | Risks named          | Data, credentials, permissions, side effects | Policy and operating boundaries         | Public reporting and support posture                    |
-| Ownership/contribution | Not normally         | When others participate                      | Ownership required                      | Contribution path required                              |
-| Operations             | Not normally         | For real operational needs                   | Deployment/recovery; triggered runbooks | For hosted surfaces                                     |
-| Decisions              | Not normally         | For a real tradeoff                          | Major ADRs                              | Major ADRs                                              |
-| Machine contract       | If parsed            | If parsed                                    | If API/schema exists                    | If applicable                                           |
-| Agent memory           | If agents return     | If agents return                             | If agents return                        | If agents return                                        |
+| Concern | Level 0 — experiment | Level 1 — active early | Level 2 — mature system | Level 3 — public OSS |
+|---|---|---|---|---|
+| README | Minimal | Standard | Standard | Public-facing |
+| Licence posture | Explicit | Explicit | Explicit | Licence file required |
+| Install | One truthful path | Reliable common path | Complete supported paths | Published, direct/source, careful paths where available |
+| Usage | One example | First successful outcome | Core workflows | User guides and examples |
+| Status and limits | Required | Required | Required | Required, including support posture |
+| Repository map | If non-obvious | If multi-part | Required | Required |
+| “So what” | One sentence | Required | Required | Required |
+| Architecture | If helpful | One useful context/flow | Context and containers | As needed; avoid code mirrors |
+| Security/privacy | Risks named | Data, credentials, permissions, side effects | Policy and operating boundaries | Public reporting and support posture |
+| Ownership/contribution | Not normally | When others participate | Ownership required | Contribution path required |
+| Operations | Not normally | For real operational needs | Deployment/recovery; triggered runbooks | For hosted surfaces |
+| Decisions | Not normally | For a real tradeoff | Major ADRs | Major ADRs |
+| Machine contract | If parsed | If parsed | If API/schema exists | If applicable |
+| Agent memory | If agents return | If agents return | If agents return | If agents return |
 
 Levels are baselines, not cumulative bureaucracy. Triggered needs override the
 typical row: a Level 1 credential-handling tool may require stronger security

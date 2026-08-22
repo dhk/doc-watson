@@ -19,10 +19,10 @@ flowchart LR
   A[Container A] --> B[Container B]
 ```
 
-| Container | Responsibility       |
-| --------- | -------------------- |
-| A         | [One responsibility] |
-| B         | [One responsibility] |
+| Container | Responsibility |
+|---|---|
+| A | [One responsibility] |
+| B | [One responsibility] |
 
 ## Key flow
 
