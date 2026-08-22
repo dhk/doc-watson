@@ -21,7 +21,10 @@ Use this shape:
 ```json
 {
   "repository": "owner/name or absolute isolated path",
-  "revision": "full commit SHA",
+  "state": {
+    "kind": "git-commit|directory-snapshot",
+    "reference": "full commit SHA or stable snapshot identifier"
+  },
   "captured_at": "ISO-8601 timestamp",
   "claims": [
     {
@@ -34,5 +37,7 @@ Use this shape:
   ]
 }
 ```
+
+Use `git-commit` when a full commit SHA exists. For a non-Git directory, use `directory-snapshot` and record a stable identifier for the exact captured before-state, such as an artifact name plus checksum. Do not create a Git repository merely to satisfy this contract.
 
 Do not include secret values or private document bodies.

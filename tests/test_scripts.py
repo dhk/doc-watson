@@ -1,4 +1,3 @@
-import importlib.util
 import json
 import subprocess
 import sys
@@ -17,12 +16,24 @@ class ScriptTests(unittest.TestCase):
             (root / "docs").mkdir()
             (root / "node_modules").mkdir()
             (root / "README.md").write_text("# Example\n")
+            (root / "CHANGELOG.md").write_text("# Changes\n")
+            (root / "CODE_OF_CONDUCT.mdx").write_text("# Conduct\n")
+            (root / "SUPPORT.rst").write_text("Support\n")
             (root / "docs/guide.md").write_text("# Guide\n")
             (root / "docs/.DS_Store").write_text("noise")
             (root / "node_modules/README.md").write_text("noise")
             result = subprocess.run([sys.executable, INVENTORY, root], check=True, capture_output=True, text=True)
             data = json.loads(result.stdout)
-            self.assertEqual([item["path"] for item in data["files"]], ["README.md", "docs/guide.md"])
+            self.assertEqual([item["path"] for item in data["files"]], ["CHANGELOG.md", "CODE_OF_CONDUCT.mdx", "README.md", "SUPPORT.rst", "docs/guide.md"])
+
+    def test_inventory_refuses_output_inside_audited_repository(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "README.md").write_text("# Example\n")
+            result = subprocess.run([sys.executable, INVENTORY, root, "--output", root / "inventory.json"], capture_output=True, text=True)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertFalse((root / "inventory.json").exists())
+            self.assertIn("refusing to write inventory inside", result.stderr)
 
     def test_doc_checker_accepts_valid_relative_link(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -41,6 +52,26 @@ class ScriptTests(unittest.TestCase):
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("broken link", result.stdout)
             self.assertIn("possible embedded credential", result.stdout)
+
+    def test_doc_checker_rejects_broken_image_and_repository_escape(self):
+        with tempfile.TemporaryDirectory() as directory:
+            container = Path(directory)
+            root = container / "repository"
+            root.mkdir()
+            (container / "outside.md").write_text("private\n")
+            (root / "README.md").write_text("![Missing](images/architecture.png)\n[Outside](../outside.md)\n")
+            result = subprocess.run([sys.executable, CHECK_DOCS, root], capture_output=True, text=True)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("broken link: images/architecture.png", result.stdout)
+            self.assertIn("link escapes repository: ../outside.md", result.stdout)
+
+    def test_doc_checker_checks_mdx(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "guide.mdx").write_text("![Missing](missing.svg)\n")
+            result = subprocess.run([sys.executable, CHECK_DOCS, root], capture_output=True, text=True)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("broken link: missing.svg", result.stdout)
 
 if __name__ == "__main__":
     unittest.main()

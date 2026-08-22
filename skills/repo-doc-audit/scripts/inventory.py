@@ -4,7 +4,8 @@ import argparse
 import json
 from pathlib import Path
 
-DOC_NAMES = {"readme.md", "license", "license.md", "install.md", "contributing.md", "security.md", "roadmap.md", "governance.md", "maintainers.md", "agents.md", "claude.md"}
+DOC_STEMS = {"readme", "license", "install", "contributing", "security", "roadmap", "governance", "maintainers", "agents", "claude", "changelog", "code_of_conduct", "code-of-conduct", "support", "authors", "notice"}
+DOC_SUFFIXES = {"", ".md", ".mdx", ".rst", ".adoc", ".txt"}
 MANIFESTS = {"package.json", "pyproject.toml", "cargo.toml", "go.mod", "gemfile", "composer.json", "dockerfile", "compose.yaml", "docker-compose.yml"}
 SKIP = {".git", "node_modules", "vendor", ".venv", "dist", "build"}
 
@@ -23,13 +24,17 @@ def main():
             continue
         rel = path.relative_to(root).as_posix()
         low = path.name.lower()
-        kind = "documentation" if low in DOC_NAMES or rel.startswith("docs/") else "manifest" if low in MANIFESTS or rel.startswith(".github/workflows/") else None
+        is_root_doc = len(relative_parts) == 1 and path.stem.lower() in DOC_STEMS and path.suffix.lower() in DOC_SUFFIXES
+        kind = "documentation" if is_root_doc or rel.startswith("docs/") else "manifest" if low in MANIFESTS or rel.startswith(".github/workflows/") else None
         if kind:
             files.append({"path": rel, "kind": kind, "bytes": path.stat().st_size})
     result = {"repository": str(root), "files": files, "counts": {kind: sum(item["kind"] == kind for item in files) for kind in ("documentation", "manifest")}}
     output = json.dumps(result, indent=2) + "\n"
     if args.output:
-        Path(args.output).write_text(output, encoding="utf-8")
+        output_path = Path(args.output).resolve()
+        if output_path == root or root in output_path.parents:
+            raise SystemExit("refusing to write inventory inside the audited repository; use stdout or an external artifact directory")
+        output_path.write_text(output, encoding="utf-8")
     else:
         print(output, end="")
 

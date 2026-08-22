@@ -10,7 +10,7 @@ Audit before proposing or writing. Treat repository evidence as authoritative an
 ## Workflow
 
 1. Establish the repository boundary, audience, lifecycle, distribution method, and whether it is public, internal, operated, or archival.
-2. Run `python3 scripts/inventory.py REPOSITORY --output audit-inventory.json`. Inspect its output; do not treat presence as quality.
+2. Run `python3 scripts/inventory.py REPOSITORY` and capture stdout through the calling harness. If a file is required, pass `--output` with a path in an external artifact directory; the script rejects paths inside the audited repository. Inspect its output; do not treat presence as quality.
 3. Read the root docs, manifests, entry points, examples, tests, CI, deployment configuration, security-sensitive paths, and recent release metadata.
 4. Read [rubric.md](references/rubric.md), select the smallest justified tier, and apply every trigger independently.
 5. Label every material statement using [provenance.md](references/provenance.md). Never upgrade inference to fact.

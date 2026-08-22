@@ -17,7 +17,7 @@ Build approved documentation from evidence. Optimize for truth, navigation, firs
 6. Create concise Mermaid diagrams only when they clarify value, flow, architecture, ownership, or trust boundaries. Keep each diagram to one concern.
 7. Write commands only from repository evidence. Verify safe commands in an isolated environment when authorized. Record unrun commands as observed, not verified.
 8. Ask one question at a time for facts that code cannot prove, especially audience, purpose, ownership, operational responsibility, and handover acceptance. Use a visible placeholder when work can continue safely.
-9. Run the repository's existing checks, then `python3 scripts/check_docs.py REPOSITORY`. Review failures instead of weakening checks.
+9. Classify the repository's existing checks by safety, cost, network use, and side effects. Run only checks already authorized and safe in the current environment, followed by `python3 scripts/check_docs.py REPOSITORY`. Skip unsafe, destructive, expensive, networked, or unauthorized checks and report each as unverified with the reason. Review failures instead of weakening checks.
 10. Re-run `$repo-doc-audit`, report the before/after delta and residual unknowns, and prepare the requested issue or PR.
 
 ## Safety and authority
