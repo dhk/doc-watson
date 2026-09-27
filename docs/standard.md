@@ -1,6 +1,6 @@
 # Repository documentation standard
 
-**Version:** 0.2.0
+**Version:** 0.3.0
 
 **Status:** Draft
 
@@ -171,7 +171,82 @@ hygiene, and maintenance apply at every level.
 
 See [`workflow.md`](workflow.md).
 
+## Enrollment
+
+A repository is under Doc Watson's control when it has a `.doc-watson.yml`
+file at its root. The file records what only the owner can declare (level,
+audience, which triggers apply, deliberate exemptions) and which audit it was
+last measured by. It never records scores; audits hold those.
+
+The file must validate against
+[`schemas/enrollment.schema.json`](../schemas/enrollment.schema.json). Start
+from [`templates/doc-watson.template.yml`](../templates/doc-watson.template.yml).
+
+| Field | Meaning |
+|---|---|
+| `schema` | Enrollment format version; currently `1`. |
+| `standard` | Standard version the repository was last audited against. |
+| `level` | Owner-declared level, 0–3. |
+| `audience` | Who the documentation serves, in one line. |
+| `triggers` | For every trigger ID below: `applies` (true or false) and a `reason`. |
+| `exemptions` | Concerns deliberately not met, each with a concern ID, a `reason`, and an optional `review_by` date. |
+| `last_audit` | `revision`, `date`, and `record` (where the audit is kept) of the latest audit. |
+| `on_drift` | What a sweep may do: `issue-and-draft-pr`, `issue`, or `report`. |
+
+Every trigger rule has one ID, in the order of the trigger rules above:
+
+| ID | Trigger rule |
+|---|---|
+| `install-guide` | Install guide |
+| `user-guides` | User guides |
+| `architecture` | Architecture |
+| `adrs` | ADRs |
+| `agent-memory` | Agent memory |
+| `machine-contracts` | Machine contracts |
+| `codeowners` | CODEOWNERS |
+| `contributing` | CONTRIBUTING |
+| `governance` | Governance |
+| `roadmap` | Roadmap |
+| `runbooks` | Runbooks |
+| `handover` | Handover docs |
+
+A concern ID is the concern's name from the audit concern list, lowercased,
+with every run of other characters replaced by one hyphen:
+`value-so-what`, `data-privacy-and-security`,
+`ownership-and-contribution`.
+
+Rules:
+
+1. Level, audience, trigger decisions, and exemptions are **declared** facts.
+   Tools may question them; only the owner changes them.
+2. An exemption must name its reason. Truthfulness, hygiene and duplication,
+   and maintenance and verification cannot be exempted.
+3. An exempt concern is scored n/a, and the audit lists the exemption.
+
+### Divergence
+
+An enrolled repository has diverged when any of these holds:
+
+1. **Stale standard:** `standard` is older than the current standard version.
+2. **Regression:** an applicable concern scores lower than in the last audit.
+3. **Hygiene failure:** a hygiene check fails, such as a broken link or an
+   embedded credential.
+4. **Contradicted declaration:** repository evidence contradicts a declared
+   fact, for example `contributing` is declared not to apply while the README
+   invites outside contributions.
+5. **Invalid enrollment:** the file is missing a field or fails the schema.
+
+A contradicted declaration is a question for the owner, never something a tool
+fixes. The periodic sweep that detects divergence is specified in
+[`sweep.md`](sweep.md).
+
 ## Changelog
+
+### 0.3.0 — 2026-09-27
+
+- Added enrollment: the `.doc-watson.yml` file, its schema and template,
+  stable IDs for trigger rules and concerns, exemption rules, and the
+  definition of divergence.
 
 ### 0.2.0 — 2026-09-27
 

@@ -1,6 +1,6 @@
 # Level and audit rubric
 
-Condensed from Doc Watson standard 0.2.0 (`docs/standard.md` in
+Condensed from Doc Watson standard 0.3.0 (`docs/standard.md` in
 [dhk/doc-watson](https://github.com/dhk/doc-watson)). The standard is the
 authority; this copy exists so the skill works when installed on its own.
 `tests/test_rubric_sync.py` fails when the levels table, trigger rules,

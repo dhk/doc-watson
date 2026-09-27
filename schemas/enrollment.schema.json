@@ -1,0 +1,169 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/dhk/doc-watson/schemas/enrollment.schema.json",
+  "title": "Doc Watson enrollment (.doc-watson.yml)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "standard",
+    "level",
+    "audience",
+    "triggers",
+    "exemptions",
+    "last_audit",
+    "on_drift"
+  ],
+  "properties": {
+    "schema": {
+      "const": 1
+    },
+    "standard": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "level": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 3
+    },
+    "audience": {
+      "type": "string",
+      "minLength": 1
+    },
+    "triggers": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "install-guide",
+        "user-guides",
+        "architecture",
+        "adrs",
+        "agent-memory",
+        "machine-contracts",
+        "codeowners",
+        "contributing",
+        "governance",
+        "roadmap",
+        "runbooks",
+        "handover"
+      ],
+      "properties": {
+        "install-guide": {
+          "$ref": "#/$defs/decision"
+        },
+        "user-guides": {
+          "$ref": "#/$defs/decision"
+        },
+        "architecture": {
+          "$ref": "#/$defs/decision"
+        },
+        "adrs": {
+          "$ref": "#/$defs/decision"
+        },
+        "agent-memory": {
+          "$ref": "#/$defs/decision"
+        },
+        "machine-contracts": {
+          "$ref": "#/$defs/decision"
+        },
+        "codeowners": {
+          "$ref": "#/$defs/decision"
+        },
+        "contributing": {
+          "$ref": "#/$defs/decision"
+        },
+        "governance": {
+          "$ref": "#/$defs/decision"
+        },
+        "roadmap": {
+          "$ref": "#/$defs/decision"
+        },
+        "runbooks": {
+          "$ref": "#/$defs/decision"
+        },
+        "handover": {
+          "$ref": "#/$defs/decision"
+        }
+      }
+    },
+    "exemptions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/exemption"
+      }
+    },
+    "last_audit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["revision", "date", "record"],
+      "properties": {
+        "revision": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{7,40}$"
+        },
+        "date": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+        },
+        "record": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "on_drift": {
+      "enum": ["issue-and-draft-pr", "issue", "report"]
+    }
+  },
+  "$defs": {
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["applies", "reason"],
+      "properties": {
+        "applies": {
+          "type": "boolean"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "exemption": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["concern", "reason"],
+      "properties": {
+        "concern": {
+          "enum": [
+            "purpose-and-audience",
+            "status-and-limits",
+            "value-so-what",
+            "first-success",
+            "install-paths",
+            "usage",
+            "architecture",
+            "data-privacy-and-security",
+            "operations",
+            "ownership-and-contribution",
+            "licence",
+            "decisions",
+            "agent-memory",
+            "machine-contracts",
+            "navigation"
+          ]
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "review_by": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+        }
+      }
+    }
+  }
+}

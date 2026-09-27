@@ -25,6 +25,7 @@ produces documentation that is both useful and defensible.
 | Standard and templates | Levels, triggers, evidence rules, structures                  | Present                                                                                                                          |
 | Skills                 | Agent-led interrogation, proposal, construction, verification | Present; initial interface for individual maintainers                                                                            |
 | MCP server             | Local, confined repository inspection and artifact operations | Initial slice implemented in [#3](https://github.com/dhk/doc-watson/issues/3); audit and proposal are file-presence placeholders |
+| Enrollment and sweep   | Declared contract per repository; periodic divergence check   | Enrollment specified in standard 0.3.0; sweep proposed in [#8](https://github.com/dhk/doc-watson/issues/8)                       |
 
 The standard is authoritative. Skills and the MCP server share its contracts
 and terminology rather than implementing independent standards. The initial

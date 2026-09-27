@@ -1,0 +1,63 @@
+# Doc Watson enrollment: this repository's documentation contract.
+# Schema: https://github.com/dhk/doc-watson/blob/main/schemas/enrollment.schema.json
+# Level, audience, trigger decisions and exemptions are owner-declared facts.
+# Tools may question them; only the owner changes them.
+
+schema: 1
+standard: 0.3.0 # standard version last audited against
+level: 1 # 0-3; see docs/standard.md#levels
+audience: The owner and agents that return to this repository.
+
+# One decision per trigger rule, each with its reason.
+triggers:
+  install-guide:
+    applies: false
+    reason: Setup fits in the README.
+  user-guides:
+    applies: false
+    reason: The README example reaches first success.
+  architecture:
+    applies: false
+    reason: The mental model fits in one read of the code.
+  adrs:
+    applies: false
+    reason: No decision with real alternatives yet.
+  agent-memory:
+    applies: true
+    reason: Agents return to this repository across sessions.
+  machine-contracts:
+    applies: false
+    reason: Nothing parses this repository.
+  codeowners:
+    applies: false
+    reason: A single owner; no shared review routing.
+  contributing:
+    applies: false
+    reason: No outside contributors are invited.
+  governance:
+    applies: false
+    reason: One maintainer.
+  roadmap:
+    applies: false
+    reason: No public audience asking what comes next.
+  runbooks:
+    applies: false
+    reason: Nothing pages anyone.
+  handover:
+    applies: false
+    reason: No other party operates this repository.
+
+# Concerns deliberately not met. Truthfulness, hygiene and duplication, and
+# maintenance and verification cannot be exempted.
+exemptions: []
+# - concern: ownership-and-contribution
+#   reason: Why this concern is deliberately not met.
+#   review_by: 2027-03-31
+
+last_audit:
+  revision: "0000000" # quoted: an all-digit hash would otherwise read as a number
+  date: 2026-01-01
+  record: https://github.com/dhk/doc-watson # where the audit is kept
+
+# What a sweep may do on divergence: issue-and-draft-pr, issue, or report.
+on_drift: issue-and-draft-pr

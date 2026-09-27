@@ -21,7 +21,7 @@ Use this shape:
 ```json
 {
   "repository": "owner/name or absolute isolated path",
-  "standard_version": "Doc Watson standard version, e.g. 0.2.0",
+  "standard_version": "Doc Watson standard version, e.g. 0.3.0",
   "state": {
     "kind": "git-commit|directory-snapshot",
     "reference": "full commit SHA or stable snapshot identifier"
