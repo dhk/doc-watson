@@ -42,6 +42,28 @@ def has_secret(content):
             return True
     return False
 
+HEADING = re.compile(r"^ {0,3}#{1,6}[ \t]+(.+?)[ \t]*#*[ \t]*$", re.M)
+HTML_ANCHOR = re.compile(r"""<a\s[^>]*\b(?:id|name)\s*=\s*["']([^"']+)["']""", re.I)
+MARKDOWN_SUFFIXES = {".md", ".mdx"}
+
+def slug(heading):
+    """GitHub's heading anchor: strip markup and punctuation, lowercase, spaces to hyphens."""
+    text = re.sub(r"!?\[([^\]]*)\]\([^)]*\)", r"\1", heading)
+    text = re.sub(r"<[^>]+>|[`*]", "", text)
+    text = re.sub(r"[^\w\- ]", "", text.lower())
+    return text.replace(" ", "-")
+
+def anchors(content):
+    """Every anchor a Markdown file defines, with GitHub's -1, -2 suffixes for repeated headings."""
+    found, seen = set(), {}
+    for heading in HEADING.findall(FENCE.sub("", content)):
+        base = slug(heading)
+        count = seen.get(base, 0)
+        found.add(base if count == 0 else f"{base}-{count}")
+        seen[base] = count + 1
+    found.update(anchor.lower() for anchor in HTML_ANCHOR.findall(content))
+    return found
+
 def link_targets(content):
     prose = INLINE_CODE.sub("", FENCE.sub("", content))
     for raw in LINK.findall(prose) + REFERENCE.findall(prose):
@@ -62,10 +84,13 @@ def main():
         if has_secret(content):
             errors.append(f"{relative}: possible embedded credential")
         for target in link_targets(content):
-            if not target or target.startswith("#") or SCHEME.match(target):
+            if not target or SCHEME.match(target):
                 continue
             path = unquote(target.split("#", 1)[0].split("?", 1)[0])
+            fragment = unquote(target.split("#", 1)[1]) if "#" in target else ""
             if not path:
+                if fragment and fragment.lower() not in anchors(content):
+                    errors.append(f"{relative}: broken anchor: {target}")
                 continue
             # A leading slash is repository-root-relative, as GitHub renders it.
             resolved = (root / path.lstrip("/") if path.startswith("/") else doc.parent / path).resolve()
@@ -73,6 +98,10 @@ def main():
                 errors.append(f"{relative}: link escapes repository: {target}")
             elif not resolved.exists():
                 errors.append(f"{relative}: broken link: {target}")
+            elif fragment and resolved.is_file() and resolved.suffix.lower() in MARKDOWN_SUFFIXES:
+                linked = resolved.read_text(encoding="utf-8", errors="replace")
+                if fragment.lower() not in anchors(linked):
+                    errors.append(f"{relative}: broken anchor: {target}")
     if errors:
         print("\n".join(errors))
         raise SystemExit(1)

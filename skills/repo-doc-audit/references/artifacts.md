@@ -9,7 +9,7 @@ Use: decision; scope, pinned revision, and Doc Watson standard version; audience
 Use this header:
 
 ```csv
-concern,applicable,score,max_score,proposed_score,status,evidence,recommendation
+concern,applicable,score,max_score,proposed_score,status,evidence,recommendation,previous_score
 ```
 
 One row per audit concern, using the concern ID (for example `value-so-what`). Column values:
@@ -20,6 +20,7 @@ One row per audit concern, using the concern ID (for example `value-so-what`). C
 | `score` | `0`, `1` or `2` when `applicable` is `yes`; blank otherwise |
 | `max_score` | `2` when `applicable` is `yes`; blank otherwise |
 | `proposed_score` | Blank during the audit; `repo-doc-propose` fills it. Together the two make the current and proposed scorecard the standard requires. |
+| `previous_score` | Optional. In a re-audit after construction, the score from the approved audit, so the before/after delta is in one file. |
 | `status` | The provenance of the score: `observed`, `verified`, `declared`, `proposed` or `unknown` |
 
 ## `evidence.json`
@@ -46,7 +47,7 @@ Use this shape:
 }
 ```
 
-Each entry in `claims` follows [`schemas/provenance.schema.json`](https://github.com/dhk/doc-watson/blob/main/schemas/provenance.schema.json), the same shape the MCP server uses. `state` is the audit's before-state; copy it from the inventory's `state`.
+Each entry in `claims` follows [`schemas/provenance.schema.json`](https://github.com/dhk/doc-watson/blob/main/schemas/provenance.schema.json), the same shape the MCP server uses. `state` is the audit's before-state; copy it from the inventory's `state`. A re-audit after construction adds `previous_state`, the approved audit's `state`.
 
 Use `git-commit` when a full commit SHA exists. For a non-Git directory, use `directory-snapshot` and record a stable identifier for the exact captured before-state, such as an artifact name plus checksum. Do not create a Git repository merely to satisfy this contract.
 
