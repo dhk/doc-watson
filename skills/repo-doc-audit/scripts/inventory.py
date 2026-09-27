@@ -3,11 +3,15 @@
 import argparse
 import json
 import os
+import subprocess
 from pathlib import Path
 
 DOC_STEMS = {"readme", "license", "licence", "copying", "install", "contributing", "security", "roadmap", "governance", "maintainers", "agents", "claude", "changelog", "code_of_conduct", "code-of-conduct", "codeowners", "support", "authors", "notice"}
 DOC_SUFFIXES = {"", ".md", ".mdx", ".rst", ".adoc", ".txt"}
+# Any root-level file with one of these suffixes is documentation, whatever its name (DESIGN.md, SKILL.md).
+PROSE_SUFFIXES = {".md", ".mdx", ".rst", ".adoc"}
 MANIFESTS = {"package.json", "pyproject.toml", "setup.py", "setup.cfg", "requirements.txt", "cargo.toml", "go.mod", "gemfile", "composer.json", "pom.xml", "build.gradle", "dockerfile", "compose.yaml", "compose.yml", "docker-compose.yml", "docker-compose.yaml"}
+ENROLLMENT = ".doc-watson.yml"
 # Pruned at any depth: dependencies, VCS data, and test fixtures that imitate other repositories.
 SKIP_ANYWHERE = {".git", "node_modules", "vendor", ".venv", "fixtures"}
 # Pruned only at the root: build output there is generated, but docs/build/ may be real documentation.
@@ -15,31 +19,49 @@ SKIP_AT_ROOT = {"dist", "build"}
 # Hidden directories are skipped except where repositories keep documentation and workflows.
 HIDDEN_ALLOWED = {".github"}
 
-def walk(root):
+def git(root, *args):
+    result = subprocess.run(["git", "-C", str(root), *args], capture_output=True, text=True)
+    return result.stdout if result.returncode == 0 else None
+
+def excluded(parts):
+    directories = parts[:-1]
+    if any(part in SKIP_ANYWHERE for part in directories):
+        return True
+    if directories and directories[0] in SKIP_AT_ROOT:
+        return True
+    if any(part.startswith(".") and part not in HIDDEN_ALLOWED for part in directories):
+        return True
+    name = parts[-1]
+    return name.startswith(".") and not (len(parts) == 1 and name == ENROLLMENT)
+
+def tracked_files(root):
+    """Committed files when the directory is in a Git work tree, else None."""
+    listing = git(root, "ls-files", "-z")
+    if listing is None:
+        return None
+    return sorted(path for path in listing.split("\0") if path)
+
+def walked_files(root):
     for directory, subdirectories, filenames in os.walk(root):
-        at_root = Path(directory) == root
-        subdirectories[:] = sorted(
-            name for name in subdirectories
-            if name not in SKIP_ANYWHERE
-            and not (at_root and name in SKIP_AT_ROOT)
-            and (not name.startswith(".") or name in HIDDEN_ALLOWED)
-        )
+        subdirectories[:] = sorted(subdirectories)
         for name in sorted(filenames):
-            if name.startswith("."):
-                continue
             path = Path(directory) / name
             if path.is_file() and not path.is_symlink():
-                yield path
+                yield path.relative_to(root).as_posix()
 
-def classify(rel, path):
+def classify(rel):
     parts = rel.split("/")
-    low = path.name.lower()
-    named_doc = path.stem.lower() in DOC_STEMS and path.suffix.lower() in DOC_SUFFIXES
-    if (len(parts) == 1 or parts[0] in {".github", "docs"} and len(parts) == 2) and named_doc:
+    name = parts[-1]
+    stem, suffix = os.path.splitext(name.lower())
+    if rel == ENROLLMENT:
+        return "enrollment"
+    if len(parts) == 1 and (suffix in PROSE_SUFFIXES or stem in DOC_STEMS and suffix in DOC_SUFFIXES):
+        return "documentation"
+    if len(parts) == 2 and parts[0] in {".github", "docs"} and stem in DOC_STEMS and suffix in DOC_SUFFIXES:
         return "documentation"
     if parts[0] == "docs":
         return "documentation"
-    if low in MANIFESTS or rel.startswith(".github/workflows/"):
+    if name.lower() in MANIFESTS or rel.startswith(".github/workflows/"):
         return "manifest"
     return None
 
@@ -51,14 +73,25 @@ def main():
     root = Path(args.repository).resolve()
     if not root.is_dir():
         raise SystemExit(f"not a directory: {root}")
+    tracked = tracked_files(root)
+    paths = tracked if tracked is not None else list(walked_files(root))
     files = []
-    for path in walk(root):
-        rel = path.relative_to(root).as_posix()
-        kind = classify(rel, path)
-        if kind:
+    for rel in paths:
+        if excluded(rel.split("/")):
+            continue
+        path = root / rel
+        kind = classify(rel)
+        if kind and path.is_file() and not path.is_symlink():
             files.append({"path": rel, "kind": kind, "bytes": path.stat().st_size})
     files.sort(key=lambda item: item["path"])
-    result = {"repository": str(root), "files": files, "counts": {kind: sum(item["kind"] == kind for item in files) for kind in ("documentation", "manifest")}}
+    if tracked is not None:
+        head = (git(root, "rev-parse", "HEAD") or "").strip() or None
+        dirty = bool((git(root, "status", "--porcelain", "--", ".") or "").strip())
+        state = {"kind": "git-commit", "reference": head, "dirty": dirty, "source": "git ls-files"}
+    else:
+        state = {"kind": "directory-snapshot", "reference": None, "dirty": None, "source": "filesystem walk"}
+    kinds = ("documentation", "manifest", "enrollment")
+    result = {"repository": str(root), "state": state, "files": files, "counts": {kind: sum(item["kind"] == kind for item in files) for kind in kinds}}
     output = json.dumps(result, indent=2) + "\n"
     if args.output:
         output_path = Path(args.output).resolve()

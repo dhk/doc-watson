@@ -1,6 +1,6 @@
 ---
 name: repo-doc-construct
-description: Construct and validate repository documentation from an approved proposal and repository evidence. Use when Codex needs to write or reorganize README, installation, architecture, guides, reference, handover, agent memory, or community files; trim duplication; verify commands and links; and prepare an evidence-backed documentation change or pull request.
+description: Construct and validate repository documentation from an approved proposal and repository evidence. Use when an agent needs to write or reorganize README, installation, architecture, guides, reference, handover, agent memory, or community files; trim duplication; verify commands and links; and prepare an evidence-backed documentation change or pull request.
 ---
 
 # Repository documentation constructor
@@ -18,7 +18,7 @@ Build approved documentation from evidence. Optimize for truth, navigation, firs
 7. Write commands only from repository evidence. Verify safe commands in an isolated environment when authorized. Record unrun commands as observed, not verified.
 8. Ask one question at a time for facts that code cannot prove, especially audience, purpose, ownership, operational responsibility, and handover acceptance. Use a visible placeholder when work can continue safely.
 9. Classify the repository's existing checks by safety, cost, network use, and side effects. Run only checks already authorized and safe in the current environment, followed by `python3 <this skill's directory>/scripts/check_docs.py REPOSITORY` (the script ships with this skill; a missing or non-directory REPOSITORY is an error, not a pass). Skip unsafe, destructive, expensive, networked, or unauthorized checks and report each as unverified with the reason. Review failures instead of weakening checks.
-10. Re-run `$repo-doc-audit`, report the before/after delta and residual unknowns, and prepare the requested issue or PR.
+10. Re-run the `repo-doc-audit` skill, report the before/after delta and residual unknowns, and prepare the requested issue or PR.
 
 ## Safety and authority
 

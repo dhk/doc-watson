@@ -170,5 +170,34 @@ class ReviewRegressionTests(unittest.TestCase):
                 data = json.loads(run(INVENTORY, FIXTURES / fixture).stdout)
                 self.assertEqual({item["path"]: item["kind"] for item in data["files"]}, files)
 
+class EndToEndRegressionTests(unittest.TestCase):
+    """Defects found by the first end-to-end run on dhk/fossil (#10)."""
+
+    def test_inventory_sees_enrollment_and_every_root_doc(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for rel in [".doc-watson.yml", "DESIGN.md", "SKILL.md", "notes.rst", ".gitignore", ".hidden.md"]:
+                (root / rel).write_text("x\n")
+            data = json.loads(run(INVENTORY, root).stdout)
+            paths = {item["path"]: item["kind"] for item in data["files"]}
+            self.assertEqual(paths, {".doc-watson.yml": "enrollment", "DESIGN.md": "documentation",
+                                     "SKILL.md": "documentation", "notes.rst": "documentation"})
+            self.assertEqual(data["counts"]["enrollment"], 1)
+            self.assertEqual(data["state"]["kind"], "directory-snapshot")
+
+    def test_inventory_uses_the_committed_tree_and_records_the_commit(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            git = ["git", "-C", str(root), "-c", "user.name=t", "-c", "user.email=t@example.invalid"]
+            subprocess.run(git + ["init", "-q"], check=True)
+            (root / "README.md").write_text("# x\n")
+            subprocess.run(git + ["add", "README.md"], check=True)
+            subprocess.run(git + ["commit", "-qm", "init"], check=True)
+            (root / "UNTRACKED.md").write_text("draft\n")
+            head = subprocess.run(git + ["rev-parse", "HEAD"], check=True, capture_output=True, text=True).stdout.strip()
+            data = json.loads(run(INVENTORY, root).stdout)
+            self.assertEqual([item["path"] for item in data["files"]], ["README.md"])
+            self.assertEqual(data["state"], {"kind": "git-commit", "reference": head, "dirty": True, "source": "git ls-files"})
+
 if __name__ == "__main__":
     unittest.main()
