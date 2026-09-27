@@ -57,7 +57,7 @@ Mermaid; compare reference with source; inspect for drift; confirm no private
 data or credentials entered the change; and re-run the audit. Skip and report
 unsafe, expensive, networked, destructive, or unauthorized checks.
 
-Label commands **source-derived, not verified** when they cannot run. A build
+Label commands **observed, not verified** when they cannot run. A build
 does not prove behavior.
 
 Required CI and shared team gates are future operating modes. The initial
