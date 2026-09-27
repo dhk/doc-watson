@@ -69,8 +69,13 @@ export function createServer(options: DomainOptions) {
         level: z.number().int().min(0).max(3).default(1),
       },
     },
-    async ({ inspection, level }) =>
-      response(auditDocumentation(inspection, level)),
+    async ({ inspection, level }) => {
+      try {
+        return response(auditDocumentation(inspection, level));
+      } catch (error) {
+        return failure(error);
+      }
+    },
   );
   server.registerTool(
     "propose_documentation",
@@ -80,8 +85,13 @@ export function createServer(options: DomainOptions) {
         level: z.number().int().min(0).max(3).default(1),
       },
     },
-    async ({ inspection, level }) =>
-      response(proposeDocumentation(inspection, level)),
+    async ({ inspection, level }) => {
+      try {
+        return response(proposeDocumentation(inspection, level));
+      } catch (error) {
+        return failure(error);
+      }
+    },
   );
   server.registerTool(
     "construct_documentation",
@@ -99,7 +109,13 @@ export function createServer(options: DomainOptions) {
   server.registerTool(
     "verify_documentation",
     { inputSchema: { proposal: proposalSchema } },
-    async ({ proposal }) => response(verifyDocumentation(proposal)),
+    async ({ proposal }) => {
+      try {
+        return response(verifyDocumentation(proposal));
+      } catch (error) {
+        return failure(error);
+      }
+    },
   );
   return server;
 }

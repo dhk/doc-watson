@@ -16,7 +16,7 @@ import {
   proposeDocumentation,
   verifyDocumentation,
 } from "../src/core.js";
-import { STANDARD_VERSION } from "../src/types.js";
+import { STANDARD_VERSION, proposalSchema } from "../src/types.js";
 
 const temporary: string[] = [];
 async function tempRoot() {
@@ -165,5 +165,48 @@ describe("standard alignment", () => {
       );
     expect(licence(1)).toMatchObject({ code: "MISSING", severity: "info" });
     expect(licence(3)).toMatchObject({ code: "MISSING", severity: "warning" });
+  });
+});
+
+describe("proposal schema matches schemas/proposal.schema.json", () => {
+  const base = {
+    schemaVersion: "1.0",
+    standardVersion: STANDARD_VERSION,
+    level: 1,
+    approved: false,
+    documents: [{ path: "README.md", purpose: "p", content: "", claims: [] }],
+    questions: ["Who is this for?"],
+  };
+
+  it("accepts a well-formed proposal", () => {
+    expect(proposalSchema.safeParse(base).success).toBe(true);
+  });
+
+  it.each(["../escape.md", "docs/../../escape.md", "/abs.md", ".."])(
+    "rejects document path %s",
+    (documentPath) => {
+      const proposal = {
+        ...base,
+        documents: [{ ...base.documents[0], path: documentPath }],
+      };
+      expect(proposalSchema.safeParse(proposal).success).toBe(false);
+    },
+  );
+
+  it("rejects empty questions and empty evidence paths", () => {
+    expect(proposalSchema.safeParse({ ...base, questions: [""] }).success).toBe(
+      false,
+    );
+    const claim = {
+      classification: "observed",
+      summary: "s",
+      evidence: [{ kind: "file", path: "" }],
+    };
+    expect(
+      proposalSchema.safeParse({
+        ...base,
+        documents: [{ ...base.documents[0], claims: [claim] }],
+      }).success,
+    ).toBe(false);
   });
 });

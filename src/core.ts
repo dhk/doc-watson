@@ -47,7 +47,16 @@ async function listEvidenceFiles(
   const files: string[] = [];
   const warnings: string[] = [];
   async function walk(directory: string): Promise<void> {
-    for (const entry of await readdir(directory, { withFileTypes: true })) {
+    let entries;
+    try {
+      entries = await readdir(directory, { withFileTypes: true });
+    } catch {
+      warnings.push(
+        `Skipped unreadable directory ${path.relative(root, directory) || "."}`,
+      );
+      return;
+    }
+    for (const entry of entries) {
       const absolute = path.join(directory, entry.name);
       const relative = path.relative(root, absolute);
       if (ignoredNames.has(entry.name) || secretPattern.test(entry.name)) {
@@ -66,7 +75,13 @@ async function listEvidenceFiles(
             `Repository exceeds ${MAX_FILES} files`,
           );
         }
-        const size = (await stat(absolute)).size;
+        let size;
+        try {
+          size = (await stat(absolute)).size;
+        } catch {
+          warnings.push(`Skipped unreadable file ${relative}`);
+          continue;
+        }
         if (size > MAX_FILE_BYTES)
           warnings.push(`Skipped oversized file ${relative}`);
         else files.push(relative);

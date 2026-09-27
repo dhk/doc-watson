@@ -96,7 +96,7 @@ Output:
 
 - manifest of created, skipped, and rejected paths;
 - content hashes for created files;
-- no writes outside `output_path`.
+- no writes outside `outputPath`.
 
 It renders to a staging directory and must not edit the inspected repository.
 

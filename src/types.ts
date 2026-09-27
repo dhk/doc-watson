@@ -13,7 +13,7 @@ export const provenanceClassification = z.enum([
 
 export const evidenceSchema = z.object({
   kind: z.enum(["file", "command", "owner"]),
-  path: z.string().optional(),
+  path: z.string().min(1).optional(),
   startLine: z.number().int().positive().optional(),
   endLine: z.number().int().positive().optional(),
   sha256: z
@@ -49,13 +49,17 @@ export const proposalSchema = z.object({
   approved: z.boolean().default(false),
   documents: z.array(
     z.object({
-      path: z.string().min(1),
+      // Same pattern as schemas/proposal.schema.json: relative, no `..` segment.
+      path: z
+        .string()
+        .min(1)
+        .regex(/^(?!\/)(?!.*(?:^|\/)\.\.(?:\/|$)).+$/),
       purpose: z.string().min(1),
       content: z.string(),
       claims: z.array(claimSchema),
     }),
   ),
-  questions: z.array(z.string()),
+  questions: z.array(z.string().min(1)),
 });
 
 export type Inspection = z.infer<typeof inspectionSchema>;
