@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/dhk/doc-watson/schemas/provenance.schema.json",
+  "title": "Doc Watson provenance",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["classification", "summary"],
+  "properties": {
+    "classification": {
+      "enum": ["observed", "verified", "declared", "proposed", "unknown"]
+    },
+    "summary": { "type": "string", "minLength": 1 },
+    "evidence": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/evidence" },
+      "default": []
+    }
+  },
+  "$defs": {
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind"],
+      "properties": {
+        "kind": { "enum": ["file", "command", "owner"] },
+        "path": { "type": "string", "minLength": 1 },
+        "startLine": { "type": "integer", "minimum": 1 },
+        "endLine": { "type": "integer", "minimum": 1 },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "excerpt": { "type": "string" },
+        "check": { "type": "string" }
+      }
+    }
+  }
+}

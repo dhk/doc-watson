@@ -20,14 +20,16 @@ produces documentation that is both useful and defensible.
 
 ## Product surfaces
 
-| Surface | Responsibility | Status |
-|---|---|---|
-| Standard and templates | Levels, triggers, evidence rules, structures | Present |
-| Skills | Agent-led interrogation, proposal, construction, verification | Present; initial interface for individual maintainers |
-| MCP server | Deterministic repository inspection and artifact operations | Proposed in [#3](https://github.com/dhk/doc-watson/issues/3) |
+| Surface                | Responsibility                                                | Status                                                                                                                           |
+| ---------------------- | ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| Standard and templates | Levels, triggers, evidence rules, structures                  | Present                                                                                                                          |
+| Skills                 | Agent-led interrogation, proposal, construction, verification | Present; initial interface for individual maintainers                                                                            |
+| MCP server             | Local, confined repository inspection and artifact operations | Initial slice implemented in [#3](https://github.com/dhk/doc-watson/issues/3); audit and proposal are file-presence placeholders |
 
-The skills and server should share contracts and terminology rather than
-implement independent standards. Their technical boundaries remain open.
+The standard is authoritative. Skills and the MCP server share its contracts
+and terminology rather than implementing independent standards. The initial
+MCP server is local and stdio-first; it does not publish or mutate a target
+repository.
 
 The first product loop is one maintainer working interactively with an agent.
 That makes questions, evidence review, and mutation approval visible in the

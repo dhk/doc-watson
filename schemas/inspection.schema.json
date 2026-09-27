@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/dhk/doc-watson/schemas/inspection.schema.json",
+  "title": "Doc Watson repository inspection",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "capabilityVersion",
+    "repository",
+    "facts",
+    "files",
+    "warnings"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "1.0" },
+    "capabilityVersion": { "const": "0.1" },
+    "repository": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "head": { "type": "string" }
+      }
+    },
+    "facts": {
+      "type": "array",
+      "items": { "$ref": "provenance.schema.json" }
+    },
+    "files": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "warnings": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}

@@ -1,0 +1,12 @@
+dist
+coverage
+fixtures
+template
+docs/evidence.md
+docs/standard.md
+templates/README.md
+templates/architecture.template.md
+templates/audit.template.md
+templates/proposal.template.md
+skills
+tests

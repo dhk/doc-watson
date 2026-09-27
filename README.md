@@ -11,9 +11,11 @@ first audience is the individual maintainer working interactively with an
 agent: useful documentation without generic boilerplate or confident guesses.
 Team-wide CI enforcement is a later integration, not the initial default.
 
-> **Status:** early working product. The standard, workflow, and first
-> repository skills are present. The MCP server
-> ([#3](https://github.com/dhk/doc-watson/issues/3)) is separate work.
+> **Status:** early working product. The standard, workflow, three repository
+> skills, and a local, stdio-first MCP server are present, all aimed at an
+> individual maintainer working interactively with an agent. The MCP audit and
+> proposal tools are thin compared with the skills; see the
+> [architecture note](docs/architecture.md).
 
 ## Why this exists
 
@@ -53,7 +55,7 @@ See the [complete workflow](docs/workflow.md) and [evidence model](docs/evidence
 
 ## Documentation levels
 
-| Level | Typical repository |
+| Level | Typical repository                         |
 | ----- | ------------------------------------------ |
 | 0     | Experiment, personal script, or archive    |
 | 1     | Active early tool or library               |
@@ -86,15 +88,16 @@ flowchart TB
 ```
 
 The [architecture note](docs/architecture.md) records which of these surfaces
-are present and which are proposed.
+are present and which are proposed. The
+[MCP server contract](docs/mcp-server.md) documents its tools.
 
 ## Skills
 
-| Skill | Current job |
-|---|---|
-| [`repo-doc-audit`](skills/repo-doc-audit/SKILL.md) | Inspect without changing the target; produce evidence, level decision, scorecard, and before-state |
-| [`repo-doc-propose`](skills/repo-doc-propose/SKILL.md) | Turn accepted findings into a bounded, approval-gated documentation plan |
-| [`repo-doc-construct`](skills/repo-doc-construct/SKILL.md) | Implement approved documentation, run authorized checks, and report the before/after delta |
+| Skill                                                      | Current job                                                                                        |
+| ---------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| [`repo-doc-audit`](skills/repo-doc-audit/SKILL.md)         | Inspect without changing the target; produce evidence, level decision, scorecard, and before-state |
+| [`repo-doc-propose`](skills/repo-doc-propose/SKILL.md)     | Turn accepted findings into a bounded, approval-gated documentation plan                           |
+| [`repo-doc-construct`](skills/repo-doc-construct/SKILL.md) | Implement approved documentation, run authorized checks, and report the before/after delta         |
 
 The stages remain separate so inspection does not imply mutation, and a
 documentation edit does not imply publication or merge authority.
@@ -108,7 +111,25 @@ documentation edit does not imply publication or merge authority.
 - composable [audit](skills/repo-doc-audit/SKILL.md),
   [proposal](skills/repo-doc-propose/SKILL.md), and
   [construction](skills/repo-doc-construct/SKILL.md) skills;
-- [prior-art and adaptation record](docs/prior-art.md).
+- [prior-art and adaptation record](docs/prior-art.md);
+- a local [MCP server](docs/mcp-server.md) with explicit read and output roots.
+
+## Try the local MCP server
+
+The server requires Node.js 20 or newer. It is not yet published to npm.
+
+```bash
+npm ci
+npm run build
+export DOC_WATSON_REPOSITORY_ROOTS="/absolute/path/to/repositories"
+export DOC_WATSON_OUTPUT_ROOTS="/absolute/path/to/staging"
+npm start
+```
+
+It waits for an MCP client over standard input/output. See the
+[client setup and tool reference](docs/mcp-server.md). Team-wide CI gates are
+not part of the initial product posture; this repository's own CI validates the
+server implementation.
 
 ## Contributing
 
