@@ -1,0 +1,4 @@
+interface:
+  display_name: "Repository Documentation Proposal"
+  short_description: "Design a right-sized documentation structure"
+  default_prompt: "Use $repo-doc-propose to turn this repository audit into a right-sized documentation proposal."

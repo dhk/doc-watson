@@ -11,9 +11,9 @@ first audience is the individual maintainer working interactively with an
 agent: useful documentation without generic boilerplate or confident guesses.
 Team-wide CI enforcement is a later integration, not the initial default.
 
-> **Status:** foundation stage. The standard and workflow are defined. The
-> repository skills ([#2](https://github.com/dhk/doc-watson/issues/2)) and MCP
-> server ([#3](https://github.com/dhk/doc-watson/issues/3)) are separate work.
+> **Status:** early working product. The standard, workflow, and first
+> repository skills are present. The MCP server
+> ([#3](https://github.com/dhk/doc-watson/issues/3)) is separate work.
 
 ## Why this exists
 
@@ -88,12 +88,26 @@ flowchart TB
 The [architecture note](docs/architecture.md) records which of these surfaces
 are present and which are proposed.
 
+## Skills
+
+| Skill | Current job |
+|---|---|
+| [`repo-doc-audit`](skills/repo-doc-audit/SKILL.md) | Inspect without changing the target; produce evidence, level decision, scorecard, and before-state |
+| [`repo-doc-propose`](skills/repo-doc-propose/SKILL.md) | Turn accepted findings into a bounded, approval-gated documentation plan |
+| [`repo-doc-construct`](skills/repo-doc-construct/SKILL.md) | Implement approved documentation, run authorized checks, and report the before/after delta |
+
+The stages remain separate so inspection does not imply mutation, and a
+documentation edit does not imply publication or merge authority.
+
 ## Current deliverables
 
 - [repository documentation standard](docs/standard.md);
 - [audit-to-ship workflow](docs/workflow.md);
 - provenance-preserving [evidence model](docs/evidence.md);
 - reusable [document templates](templates/README.md);
+- composable [audit](skills/repo-doc-audit/SKILL.md),
+  [proposal](skills/repo-doc-propose/SKILL.md), and
+  [construction](skills/repo-doc-construct/SKILL.md) skills;
 - [prior-art and adaptation record](docs/prior-art.md).
 
 ## Contributing
