@@ -178,7 +178,9 @@ file at its root. The file records what only the owner can declare (level,
 audience, which triggers apply, deliberate exemptions) and which audit it was
 last measured by. It never records scores; audits hold those.
 
-The file must validate against
+Write dates and commit hashes as quoted strings: YAML 1.1 parsers read an
+unquoted date as a date and an all-digit hash as a number, and the schema
+requires strings. The file must validate against
 [`schemas/enrollment.schema.json`](../schemas/enrollment.schema.json). Start
 from [`templates/doc-watson.template.yml`](../templates/doc-watson.template.yml).
 

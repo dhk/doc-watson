@@ -39,6 +39,20 @@ describe("enrollment", () => {
     expect(template.standard).toBe(STANDARD_VERSION);
   });
 
+  it("the template also validates under YAML 1.1 parsing, and an unquoted date does not", async () => {
+    const { validate } = await load();
+    const text = await read("templates/doc-watson.template.yml");
+    const asYaml11 = parse(text, { version: "1.1" });
+    expect(validate(asYaml11), JSON.stringify(validate.errors)).toBe(true);
+    const unquoted = parse(
+      text.replace('date: "2026-01-01"', "date: 2026-01-01"),
+      {
+        version: "1.1",
+      },
+    );
+    expect(validate(unquoted)).toBe(false);
+  });
+
   it("trigger IDs match the standard, one per trigger rule", async () => {
     const { standard, schema } = await load();
     const table =
