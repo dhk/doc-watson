@@ -1,5 +1,8 @@
 import { z } from "zod";
 
+/** Must equal the **Version:** line of docs/standard.md. */
+export const STANDARD_VERSION = "0.2.0";
+
 export const provenanceClassification = z.enum([
   "observed",
   "verified",
@@ -41,7 +44,7 @@ export const inspectionSchema = z.object({
 
 export const proposalSchema = z.object({
   schemaVersion: z.literal("1.0"),
-  standardVersion: z.literal("draft-1"),
+  standardVersion: z.literal(STANDARD_VERSION),
   level: z.number().int().min(0).max(3),
   approved: z.boolean().default(false),
   documents: z.array(

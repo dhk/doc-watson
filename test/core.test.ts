@@ -10,11 +10,13 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import {
+  auditDocumentation,
   constructDocumentation,
   inspectRepository,
   proposeDocumentation,
   verifyDocumentation,
 } from "../src/core.js";
+import { STANDARD_VERSION } from "../src/types.js";
 
 const temporary: string[] = [];
 async function tempRoot() {
@@ -100,7 +102,7 @@ describe("proposal and construction", () => {
     const root = await tempRoot();
     const proposal = {
       schemaVersion: "1.0" as const,
-      standardVersion: "draft-1" as const,
+      standardVersion: "0.2.0" as const,
       level: 1,
       approved: true,
       documents: [
@@ -125,5 +127,33 @@ describe("proposal and construction", () => {
         outputRoots: [root],
       }),
     ).rejects.toBeTruthy();
+  });
+});
+
+describe("standard alignment", () => {
+  const inspection = {
+    schemaVersion: "1.0" as const,
+    capabilityVersion: "0.1" as const,
+    repository: { name: "example" },
+    facts: [],
+    files: ["README.md"],
+    warnings: [],
+  };
+
+  it("pins the version stated in docs/standard.md", async () => {
+    const standard = await readFile(
+      path.join(import.meta.dirname, "../docs/standard.md"),
+      "utf8",
+    );
+    expect(standard).toContain(`**Version:** ${STANDARD_VERSION}\n`);
+  });
+
+  it("requires a licence file only at Level 3", () => {
+    const licence = (level: number) =>
+      auditDocumentation(inspection, level).findings.find(
+        (finding) => finding.path === "LICENSE",
+      );
+    expect(licence(1)).toMatchObject({ code: "MISSING", severity: "info" });
+    expect(licence(3)).toMatchObject({ code: "MISSING", severity: "warning" });
   });
 });

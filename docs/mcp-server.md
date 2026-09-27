@@ -65,6 +65,10 @@ Output:
 Input: a validated inspection and documentation level. Output: stable finding
 codes and severity. It performs no file writes.
 
+Current scope: file presence for `README.md` (required at every level) and
+`LICENSE` (a warning only at Level 3, per the standard). It does not yet score
+the standard's audit concerns.
+
 ### `propose_documentation`
 
 Input:

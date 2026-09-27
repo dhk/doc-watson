@@ -15,6 +15,7 @@ import {
 } from "./paths.js";
 import {
   DomainError,
+  STANDARD_VERSION,
   inspectionSchema,
   proposalSchema,
   type Inspection,
@@ -121,13 +122,27 @@ export async function inspectRepository(
 
 export function auditDocumentation(inspection: Inspection, level = 1) {
   inspectionSchema.parse(inspection);
-  const required = ["README.md", "LICENSE"];
-  const findings = required.map((documentPath) => ({
-    code: inspection.files.includes(documentPath) ? "PRESENT" : "MISSING",
-    severity: inspection.files.includes(documentPath) ? "info" : "warning",
-    path: documentPath,
-  }));
-  return { schemaVersion: "1.0", level, findings };
+  // docs/standard.md requires a README at every level, but a licence file only
+  // at Level 3; below that an explicit licence posture (e.g. in the README) is
+  // enough, which this file-presence check cannot see.
+  const checks = [
+    { path: "README.md", required: true },
+    { path: "LICENSE", required: level >= 3 },
+  ];
+  const findings = checks.map(({ path: documentPath, required }) => {
+    const present = inspection.files.includes(documentPath);
+    return {
+      code: present ? "PRESENT" : "MISSING",
+      severity: present || !required ? "info" : "warning",
+      path: documentPath,
+    };
+  });
+  return {
+    schemaVersion: "1.0",
+    standardVersion: STANDARD_VERSION,
+    level,
+    findings,
+  };
 }
 
 export function proposeDocumentation(
@@ -138,7 +153,7 @@ export function proposeDocumentation(
   const hasReadme = inspection.files.includes("README.md");
   return proposalSchema.parse({
     schemaVersion: "1.0",
-    standardVersion: "draft-1",
+    standardVersion: STANDARD_VERSION,
     level,
     approved: false,
     documents: hasReadme
