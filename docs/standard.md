@@ -1,10 +1,10 @@
 # Repository documentation standard
 
-**Version:** 0.1.0
+**Version:** 0.2.0
 
 **Status:** Draft
 
-**Last updated:** 2026-08-22
+**Last updated:** 2026-09-27
 
 “Must” is a requirement for the selected level or applicable trigger. “Should”
 is the default unless repository evidence supports an exception.
@@ -118,6 +118,45 @@ was recorded but never closed.
 Prefer deletion, consolidation, relocation, or an archival notice when a
 repository or document lacks a coherent continuing purpose.
 
+## Scoring
+
+An audit scores each concern that applies at the selected level or through a
+trigger rule:
+
+| Score | Meaning |
+|---|---|
+| 0 | Absent |
+| 1 | Partial or stale |
+| 2 | Fit for purpose |
+| n/a | Not required at this level and no trigger applies |
+
+Record n/a separately from 0. Never award points for a document nothing
+requires; more files are not more maturity.
+
+### Audit concerns
+
+1. Purpose and audience
+2. Status and limits
+3. Value (“so what”)
+4. First success
+5. Install paths
+6. Usage
+7. Architecture
+8. Data, privacy, and security
+9. Operations
+10. Ownership and contribution
+11. Licence
+12. Decisions
+13. Agent memory
+14. Machine contracts
+15. Navigation
+16. Truthfulness
+17. Hygiene and duplication
+18. Maintenance and verification
+
+Every row of the levels table maps to at least one concern. Truthfulness,
+hygiene, and maintenance apply at every level.
+
 ## Minimum audit output
 
 - target repository and revision;
@@ -125,13 +164,20 @@ repository or document lacks a coherent continuing purpose.
 - evidence inventory and important absences;
 - findings for applicable purpose, status, setup, usage, architecture, safety,
   ownership, and hygiene concerns;
-- current and proposed scorecard;
+- current and proposed scorecard, using the scale above;
 - file-level proposal with deliberate omissions;
 - bounded unknowns and validation limits.
 
 See [`workflow.md`](workflow.md).
 
 ## Changelog
+
+### 0.2.0 — 2026-09-27
+
+- Made the scoring scale and audit concern list normative here; they were
+  previously defined only in the audit skill's rubric.
+- Added decisions and agent memory as scored concerns so every levels-table
+  row can be scored.
 
 ### 0.1.0 — 2026-08-22
 

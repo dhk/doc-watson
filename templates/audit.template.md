@@ -24,14 +24,26 @@ Treat this repository as **Level [0–3]** because [evidence-backed rationale].
 | Concern | Before | Proposed | Evidence |
 |---|---:|---:|---|
 | Purpose and audience | 0 | 0 | |
-| Status and limitations | 0 | 0 | |
-| Installation and first use | 0 | 0 | |
-| Architecture and “so what” | 0 | 0 | |
-| Safety and operations | 0 | 0 | |
-| Ownership and licence | 0 | 0 | |
-| Navigation and hygiene | 0 | 0 | |
+| Status and limits | 0 | 0 | |
+| Value (“so what”) | 0 | 0 | |
+| First success | 0 | 0 | |
+| Install paths | 0 | 0 | |
+| Usage | 0 | 0 | |
+| Architecture | 0 | 0 | |
+| Data, privacy, and security | 0 | 0 | |
+| Operations | 0 | 0 | |
+| Ownership and contribution | 0 | 0 | |
+| Licence | 0 | 0 | |
+| Decisions | 0 | 0 | |
+| Agent memory | 0 | 0 | |
+| Machine contracts | 0 | 0 | |
+| Navigation | 0 | 0 | |
+| Truthfulness | 0 | 0 | |
+| Hygiene and duplication | 0 | 0 | |
+| Maintenance and verification | 0 | 0 | |
 
-Use 0 = absent, 1 = partial, 2 = fit. Adapt concerns to real triggers.
+Use 0 = absent, 1 = partial or stale, 2 = fit for purpose, n/a = not required
+at this level and no trigger applies. See the standard's scoring section.
 
 ## Findings
 
