@@ -102,7 +102,7 @@ describe("proposal and construction", () => {
     const root = await tempRoot();
     const proposal = {
       schemaVersion: "1.0" as const,
-      standardVersion: "0.2.0" as const,
+      standardVersion: STANDARD_VERSION,
       level: 1,
       approved: true,
       documents: [
@@ -146,6 +146,16 @@ describe("standard alignment", () => {
       "utf8",
     );
     expect(standard).toContain(`**Version:** ${STANDARD_VERSION}\n`);
+  });
+
+  it("pins the same version in the published proposal schema", async () => {
+    const schema = JSON.parse(
+      await readFile(
+        path.join(import.meta.dirname, "../schemas/proposal.schema.json"),
+        "utf8",
+      ),
+    );
+    expect(schema.properties.standardVersion.const).toBe(STANDARD_VERSION);
   });
 
   it("requires a licence file only at Level 3", () => {

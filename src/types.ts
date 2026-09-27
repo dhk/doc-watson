@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 /** Must equal the **Version:** line of docs/standard.md. */
-export const STANDARD_VERSION = "0.2.0";
+export const STANDARD_VERSION = "0.2.0" as const;
 
 export const provenanceClassification = z.enum([
   "observed",
