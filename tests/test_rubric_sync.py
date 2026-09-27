@@ -16,6 +16,9 @@ def section(text, heading):
 def numbered_items(block):
     return re.findall(r"^\d+\. (.+)$", block, re.M)
 
+def table_rows(block):
+    return [line.strip() for line in block.splitlines() if line.startswith("|")]
+
 def bullets(block):
     items = re.split(r"^- ", block, flags=re.M)[1:]
     return [" ".join(item.split()) for item in items]
@@ -40,6 +43,16 @@ class RubricSyncTests(unittest.TestCase):
         expected = bullets(section(self.standard, "Trigger rules"))
         self.assertTrue(expected)
         self.assertEqual(bullets(section(self.rubric, "Trigger rules")), expected)
+
+    def test_levels_table_matches(self):
+        expected = table_rows(section(self.standard, "Levels"))
+        self.assertTrue(expected)
+        self.assertEqual(table_rows(section(self.rubric, "Levels")), expected)
+
+    def test_scoring_scale_matches(self):
+        expected = table_rows(section(self.standard, "Scoring"))
+        self.assertTrue(expected)
+        self.assertEqual(table_rows(section(self.rubric, "Scoring")), expected)
 
 if __name__ == "__main__":
     unittest.main()
