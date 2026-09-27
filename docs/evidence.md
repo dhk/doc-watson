@@ -25,15 +25,17 @@ until it runs successfully in a stated environment.
 
 ## Example claim record
 
-```yaml
-claim: The project requires Node.js 22.
-state: observed
-source:
-  path: .nvmrc
-  revision: 0123456789abcdef
-verified: false
-notes: Installation was not executed in the audit environment.
+```json
+{
+  "classification": "observed",
+  "summary": "The project requires Node.js 22.",
+  "evidence": [{ "kind": "file", "path": ".nvmrc", "startLine": 1 }]
+}
 ```
+
+This is the shape in [`schemas/provenance.schema.json`](../schemas/provenance.schema.json).
+The revision belongs to the audit as a whole (its `state`), not to each claim.
+Installation was not run here, so the claim stays `observed`, not `verified`.
 
 Published prose need not annotate every sentence. Audit artifacts must retain
 enough provenance to review consequential claims.
