@@ -55,7 +55,7 @@ usage; check links and Mermaid; compare reference with source; inspect for
 drift; confirm no private data or credentials entered the change; and re-run
 the audit.
 
-Label commands **source-derived, not verified** when they cannot run. A build
+Label commands **observed, not verified** when they cannot run. A build
 does not prove behavior.
 
 ## 7. Ship and preserve

@@ -17,30 +17,31 @@ Treat this repository as **Level [0–3]** because [evidence-backed rationale].
 - **Observed:** [source/config/docs/history]
 - **Verified:** [commands and environment]
 - **Declared:** [owner facts and source]
+- **Proposed:** [recommended future state, not implemented]
 - **Unknown:** [material gaps]
 
 ## Scorecard
 
 | Concern | Before | Proposed | Evidence |
 |---|---:|---:|---|
-| Purpose and audience | 0 | 0 | |
-| Status and limits | 0 | 0 | |
-| Value (“so what”) | 0 | 0 | |
-| First success | 0 | 0 | |
-| Install paths | 0 | 0 | |
-| Usage | 0 | 0 | |
-| Architecture | 0 | 0 | |
-| Data, privacy, and security | 0 | 0 | |
-| Operations | 0 | 0 | |
-| Ownership and contribution | 0 | 0 | |
-| Licence | 0 | 0 | |
-| Decisions | 0 | 0 | |
-| Agent memory | 0 | 0 | |
-| Machine contracts | 0 | 0 | |
-| Navigation | 0 | 0 | |
-| Truthfulness | 0 | 0 | |
-| Hygiene and duplication | 0 | 0 | |
-| Maintenance and verification | 0 | 0 | |
+| Purpose and audience | | | |
+| Status and limits | | | |
+| Value (“so what”) | | | |
+| First success | | | |
+| Install paths | | | |
+| Usage | | | |
+| Architecture | | | |
+| Data, privacy, and security | | | |
+| Operations | | | |
+| Ownership and contribution | | | |
+| Licence | | | |
+| Decisions | | | |
+| Agent memory | | | |
+| Machine contracts | | | |
+| Navigation | | | |
+| Truthfulness | | | |
+| Hygiene and duplication | | | |
+| Maintenance and verification | | | |
 
 Use 0 = absent, 1 = partial or stale, 2 = fit for purpose, n/a = not required
 at this level and no trigger applies. See the standard's scoring section.

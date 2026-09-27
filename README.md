@@ -2,9 +2,11 @@
 
 Repository documentation from evidence.
 
-Doc Watson inspects a software repository, decides how much documentation it
-has earned, proposes a coherent structure, and helps construct truthful docs
-from code, configuration, tests, workflows, releases, and owner input. Its
+Doc Watson is built to inspect a software repository, decide how much
+documentation it has earned, propose a coherent structure, and help construct
+truthful docs from code, configuration, tests, workflows, releases, and owner
+input. Which parts exist today is recorded in the
+[architecture note](docs/architecture.md). Its
 first audience is the individual maintainer working interactively with an
 agent: useful documentation without generic boilerplate or confident guesses.
 Team-wide CI enforcement is a later integration, not the initial default.
@@ -51,12 +53,15 @@ See the [complete workflow](docs/workflow.md) and [evidence model](docs/evidence
 
 ## Documentation levels
 
-| Level | Typical repository | Foundation |
-|---|---|---|
-| 0 | Personal experiment or script | Purpose, honest status, usage, licence posture |
-| 1 | Active early tool or library | Level 0 plus reliable setup, map, limitations, and helpful diagrams |
-| 2 | Mature system or service | Level 1 plus architecture, operations, ownership, and triggered decisions |
-| 3 | Credible public open source | Level 2 plus public contribution, release, and complete user paths |
+| Level | Typical repository |
+| ----- | ------------------------------------------ |
+| 0     | Experiment, personal script, or archive    |
+| 1     | Active early tool or library               |
+| 2     | Mature system or service                   |
+| 3     | Credible public OSS with outside consumers |
+
+What each level requires, concern by concern, is defined only in the
+[standard](docs/standard.md#levels); levels are baselines, not cumulative.
 
 Documents are triggered by real needs, not level alone. Runbooks exist because
 alerts page someone; governance exists because maintainers share authority;
@@ -80,8 +85,8 @@ flowchart TB
   O -->|purpose and meaning| OUT
 ```
 
-Only the standard and workflow are present in this first change. See the
-[architecture note](docs/architecture.md).
+The [architecture note](docs/architecture.md) records which of these surfaces
+are present and which are proposed.
 
 ## Current deliverables
 
