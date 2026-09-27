@@ -11,6 +11,7 @@ unfilled template is not evidence of maturity.
 | [`adr.template.md`](adr.template.md) | A real decision has alternatives and consequences |
 | [`audit.template.md`](audit.template.md) | Recording the assessment |
 | [`proposal.template.md`](proposal.template.md) | Seeking approval for the after-state |
+| [`doc-watson.template.yml`](doc-watson.template.yml) | Enrolling a repository under Doc Watson (copy to `.doc-watson.yml`) |
 
 Delete unused headings and bracketed prompts. Link generated or canonical
 reference instead of copying it.
