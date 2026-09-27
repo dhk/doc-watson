@@ -25,7 +25,8 @@ Labs remains historical evidence, not a second mutable authority.
 The workflow and artifact model were adapted from two 2026 case studies:
 
 - `dhk/labs`: rich documentation islands without a usable front door;
-- `Toolkit-Software-Limited/blazor`: separate internal-use and handover proposals.
+- a third-party .NET/Blazor codebase (private engagement, not named): separate
+  internal-use and handover proposals.
 
 They established that documentation quality is navigation and truthful status,
 a template is not evidence, an audit states where evidence stops, different

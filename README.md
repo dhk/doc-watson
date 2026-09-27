@@ -2,17 +2,20 @@
 
 Repository documentation from evidence.
 
-Doc Watson inspects a software repository, decides how much documentation it
-has earned, proposes a coherent structure, and helps construct truthful docs
-from code, configuration, tests, workflows, releases, and owner input. Its
+Doc Watson is built to inspect a software repository, decide how much
+documentation it has earned, propose a coherent structure, and help construct
+truthful docs from code, configuration, tests, workflows, releases, and owner
+input. Which parts exist today is recorded in the
+[architecture note](docs/architecture.md). Its
 first audience is the individual maintainer working interactively with an
 agent: useful documentation without generic boilerplate or confident guesses.
 Team-wide CI enforcement is a later integration, not the initial default.
 
-> **Status:** early working slice. The standard and workflow are canonical. A
-> local, stdio-first MCP server implements the initial inspect-to-verify path
-> for an individual maintainer working interactively with an agent. Repository
-> skills ([#2](https://github.com/dhk/doc-watson/issues/2)) remain separate work.
+> **Status:** early working product. The standard, workflow, three repository
+> skills, and a local, stdio-first MCP server are present, all aimed at an
+> individual maintainer working interactively with an agent. The MCP audit and
+> proposal tools are thin compared with the skills; see the
+> [architecture note](docs/architecture.md).
 
 ## Why this exists
 
@@ -52,12 +55,15 @@ See the [complete workflow](docs/workflow.md) and [evidence model](docs/evidence
 
 ## Documentation levels
 
-| Level | Typical repository            | Foundation                                                                |
-| ----- | ----------------------------- | ------------------------------------------------------------------------- |
-| 0     | Personal experiment or script | Purpose, honest status, usage, licence posture                            |
-| 1     | Active early tool or library  | Level 0 plus reliable setup, map, limitations, and helpful diagrams       |
-| 2     | Mature system or service      | Level 1 plus architecture, operations, ownership, and triggered decisions |
-| 3     | Credible public open source   | Level 2 plus public contribution, release, and complete user paths        |
+| Level | Typical repository                         |
+| ----- | ------------------------------------------ |
+| 0     | Experiment, personal script, or archive    |
+| 1     | Active early tool or library               |
+| 2     | Mature system or service                   |
+| 3     | Credible public OSS with outside consumers |
+
+What each level requires, concern by concern, is defined only in the
+[standard](docs/standard.md#levels); levels are baselines, not cumulative.
 
 Documents are triggered by real needs, not level alone. Runbooks exist because
 alerts page someone; governance exists because maintainers share authority;
@@ -81,9 +87,20 @@ flowchart TB
   O -->|purpose and meaning| OUT
 ```
 
-The standard remains authoritative; interfaces consume its vocabulary rather
-than restating it. See the [architecture note](docs/architecture.md) and
-[MCP server contract](docs/mcp-server.md).
+The [architecture note](docs/architecture.md) records which of these surfaces
+are present and which are proposed. The
+[MCP server contract](docs/mcp-server.md) documents its tools.
+
+## Skills
+
+| Skill                                                      | Current job                                                                                        |
+| ---------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| [`repo-doc-audit`](skills/repo-doc-audit/SKILL.md)         | Inspect without changing the target; produce evidence, level decision, scorecard, and before-state |
+| [`repo-doc-propose`](skills/repo-doc-propose/SKILL.md)     | Turn accepted findings into a bounded, approval-gated documentation plan                           |
+| [`repo-doc-construct`](skills/repo-doc-construct/SKILL.md) | Implement approved documentation, run authorized checks, and report the before/after delta         |
+
+The stages remain separate so inspection does not imply mutation, and a
+documentation edit does not imply publication or merge authority.
 
 ## Current deliverables
 
@@ -91,6 +108,9 @@ than restating it. See the [architecture note](docs/architecture.md) and
 - [audit-to-ship workflow](docs/workflow.md);
 - provenance-preserving [evidence model](docs/evidence.md);
 - reusable [document templates](templates/README.md);
+- composable [audit](skills/repo-doc-audit/SKILL.md),
+  [proposal](skills/repo-doc-propose/SKILL.md), and
+  [construction](skills/repo-doc-construct/SKILL.md) skills;
 - [prior-art and adaptation record](docs/prior-art.md);
 - a local [MCP server](docs/mcp-server.md) with explicit read and output roots.
 

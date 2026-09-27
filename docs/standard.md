@@ -154,7 +154,8 @@ requires; more files are not more maturity.
 17. Hygiene and duplication
 18. Maintenance and verification
 
-Every row of the levels table maps to at least one concern. Truthfulness,
+Every row of the levels table maps to at least one concern; the README row
+maps to purpose and audience, first success, and navigation. Truthfulness,
 hygiene, and maintenance apply at every level.
 
 ## Minimum audit output
@@ -174,8 +175,9 @@ See [`workflow.md`](workflow.md).
 
 ### 0.2.0 — 2026-09-27
 
-- Made the scoring scale and audit concern list normative here; they were
-  previously defined only in the audit skill's rubric.
+- Made the scoring scale and audit concern list normative here. Before this,
+  the audit template carried a seven-row list and the proposed audit skill
+  (#2) a different one.
 - Added decisions and agent memory as scored concerns so every levels-table
   row can be scored.
 

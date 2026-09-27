@@ -6,6 +6,9 @@
 
 **Audit:** [link]
 
+**Approval:** [not approved / approved] by [owner] on [date], via [link to
+recorded decision]. Construction must not start until this says approved.
+
 ## Proposed manifest
 
 ```text
