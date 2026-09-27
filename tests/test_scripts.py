@@ -199,5 +199,39 @@ class EndToEndRegressionTests(unittest.TestCase):
             self.assertEqual([item["path"] for item in data["files"]], ["README.md"])
             self.assertEqual(data["state"], {"kind": "git-commit", "reference": head, "dirty": True, "source": "git ls-files"})
 
+class AnchorTests(unittest.TestCase):
+    """check_docs.py checks #anchors against GitHub's heading slugs (#12)."""
+
+    def check(self, files):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for rel, text in files.items():
+                (root / rel).parent.mkdir(parents=True, exist_ok=True)
+                (root / rel).write_text(text)
+            return run(CHECK_DOCS, root)
+
+    def test_valid_anchors_pass(self):
+        guide = (
+            "# Guide\n## Value (\u201cso what\u201d)\n## Setup\n## Setup\n"
+            "## LinkedIn data \u2014 legal/ToS risk\n## `run.py` flags\n"
+            '<a id="Custom-Anchor"></a>\n```\n## not-a-heading\n```\n'
+        )
+        links = (
+            "[a](guide.md#value-so-what) [b](guide.md#setup-1) "
+            "[c](guide.md#linkedin-data--legaltos-risk) [d](guide.md#runpy-flags) "
+            "[e](guide.md#custom-anchor) [f](#readme) [g](tool.py#L10)\n# Readme\n"
+        )
+        result = self.check({"guide.md": guide, "README.md": links, "tool.py": "x = 1\n"})
+        self.assertEqual(result.returncode, 0, result.stdout)
+
+    def test_broken_anchors_fail(self):
+        result = self.check({
+            "guide.md": "# Guide\n```\n## Fenced\n```\n",
+            "README.md": "[a](guide.md#missing) [b](#nowhere) [c](guide.md#fenced)\n# Readme\n",
+        })
+        self.assertNotEqual(result.returncode, 0)
+        for target in ["guide.md#missing", "#nowhere", "guide.md#fenced"]:
+            self.assertIn(f"broken anchor: {target}", result.stdout)
+
 if __name__ == "__main__":
     unittest.main()
