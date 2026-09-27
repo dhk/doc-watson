@@ -5,7 +5,7 @@ description: Turn an evidence-backed repository documentation audit into a right
 
 # Repository documentation proposal
 
-Translate findings into the smallest structure that satisfies the justified tier. Do not generate finished docs in this phase.
+Translate findings into the smallest structure that satisfies the justified level. Do not generate finished docs in this phase.
 
 ## Inputs
 
@@ -13,7 +13,7 @@ Require an audit or reconstruct equivalent evidence. Read [proposal-contract.md]
 
 ## Workflow
 
-1. Restate the audience, tier, maturity, live capabilities, risks, and unknowns.
+1. Restate the audience, level, maturity, live capabilities, risks, and unknowns.
 2. Map each audit finding to keep, revise, add, merge, move, or retire.
 3. Apply trigger rules. Reject ceremonial files that lack a real consumer.
 4. Design one canonical location per fact; make secondary files link to it.

@@ -9,7 +9,7 @@ Build approved documentation from evidence. Optimize for truth, navigation, firs
 
 ## Workflow
 
-1. Confirm the approved scope, target tier, mutation authority, branch policy, and files owned by other concurrent work.
+1. Confirm the approved scope, target level, mutation authority, branch policy, and files owned by other concurrent work.
 2. Read [construction-rules.md](references/construction-rules.md) and the relevant audit, evidence inventory, proposal, manifests, code, tests, workflows, and existing docs.
 3. Preserve unrelated changes. Capture the exact before state or base commit.
 4. Write one canonical source per fact. Replace duplication with links; do not silently delete historically valuable material.

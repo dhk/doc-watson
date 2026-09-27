@@ -2,7 +2,7 @@
 
 Produce:
 
-1. Tier decision and audience.
+1. Level decision and audience.
 2. Current-state summary with evidence labels.
 3. Proposed documentation tree.
 4. Disposition table: current path, action, destination, rationale, evidence.

@@ -89,7 +89,7 @@ extensions, not prerequisites for a useful first run. See the
 
 | Skill | Current job |
 |---|---|
-| [`repo-doc-audit`](skills/repo-doc-audit/SKILL.md) | Inspect without changing the target; produce evidence, tier decision, scorecard, and before-state |
+| [`repo-doc-audit`](skills/repo-doc-audit/SKILL.md) | Inspect without changing the target; produce evidence, level decision, scorecard, and before-state |
 | [`repo-doc-propose`](skills/repo-doc-propose/SKILL.md) | Turn accepted findings into a bounded, approval-gated documentation plan |
 | [`repo-doc-construct`](skills/repo-doc-construct/SKILL.md) | Implement approved documentation, run authorized checks, and report the before/after delta |
 
