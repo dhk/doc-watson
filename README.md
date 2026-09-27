@@ -4,9 +4,10 @@ Repository documentation from evidence.
 
 Doc Watson inspects a software repository, decides how much documentation it
 has earned, proposes a coherent structure, and helps construct truthful docs
-from code, configuration, tests, workflows, releases, and owner input. It is
-for maintainers who want useful documentation without generic boilerplate or
-confident guesses.
+from code, configuration, tests, workflows, releases, and owner input. Its
+first audience is the individual maintainer working interactively with an
+agent: useful documentation without generic boilerplate or confident guesses.
+Team-wide CI enforcement is a later integration, not the initial default.
 
 > **Status:** early working product. The standard, workflow, and first
 > repository skills are present. The MCP server
