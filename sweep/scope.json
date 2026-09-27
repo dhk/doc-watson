@@ -1,0 +1,17 @@
+{
+  "decided": "owner, 2026-09-27: the twelve repositories in the owner's Claude Code working set",
+  "repositories": [
+    "dhk/adventures-in-ai",
+    "dhk/alexandria",
+    "dhk/bosworth",
+    "dhk/captains-log-repo",
+    "dhk/chekov",
+    "dhk/crucible",
+    "dhk/doc-watson",
+    "dhk/fossil",
+    "dhk/labs",
+    "dhk/plumbline",
+    "dhk/wingman",
+    "dhk/woven"
+  ]
+}

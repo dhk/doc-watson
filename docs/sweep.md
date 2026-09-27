@@ -1,9 +1,10 @@
 # Sweep
 
-> **Status: proposed** ([#8](https://github.com/dhk/doc-watson/issues/8)). Nothing
-> described here runs yet. The enrollment file and the definition of
-> divergence it relies on are part of the standard; this page is the contract
-> the sweep will be built to.
+> **Status: built, not yet scheduled.** The deterministic checks
+> ([`sweep/check.ts`](../sweep/check.ts), `npm run sweep:check`), the scope
+> ([`sweep/scope.json`](../sweep/scope.json)), the audit registry
+> ([`audits/`](../audits/README.md)) and the routine a scheduled session follows
+> ([`sweep/ROUTINE.md`](../sweep/ROUTINE.md)) exist. No schedule runs them yet.
 
 The sweep keeps enrolled repositories aligned with the standard without making
 decisions that belong to their owners.
