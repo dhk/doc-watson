@@ -12,7 +12,13 @@ earlier session. Dates are UTC (`date -u +%F`).
    branch created from `origin/main`: the branch this session is assigned if
    it has one, otherwise `sweep/<date>`. Run `npm ci`. Run every `npm`
    command below from the doc-watson checkout; the paths are relative to it.
-3. Read `sweep/scope.json`. The checkout for `owner/name` is the directory
+3. Audit records go to the private registry `dhk/doc-watson-audit`, never to
+   doc-watson, which is public. Its checkout (`<registry>`) is the directory
+   `doc-watson-audit` next to the doc-watson checkout; if it is missing, clone
+   it. If it cannot be reached, stop: do not audit without somewhere private
+   to put the records. Run `git -C <registry> fetch origin main` and work from
+   a branch created from `origin/main`, named as in step 2.
+4. Read `sweep/scope.json`. The checkout for `owner/name` is the directory
    `name` next to the doc-watson checkout. If it is missing, clone
    `https://github.com/owner/name` into a scratch directory. If that fails,
    record the repository as unreachable and go on.
@@ -32,9 +38,9 @@ earlier session. Dates are UTC (`date -u +%F`).
 3. Run the `repo-doc-audit` skill on `<tree>` as an **unattended** run
    (`skills/repo-doc-audit/SKILL.md`). Do not run `repo-doc-propose`; a
    proposal waits for the owner. Write the artifacts to
-   `audits/<owner>/<name>/<date>/`.
+   `<registry>/audits/<owner>/<name>/<date>/`.
 4. Run
-   `npm run -s sweep:check -- --repo <tree> --current audits/<owner>/<name>/<date>/scorecard.csv --registry audits/<owner>/<name>`.
+   `npm run -s sweep:check -- --repo <tree> --current <registry>/audits/<owner>/<name>/<date>/scorecard.csv --registry <registry>/audits/<owner>/<name>`.
    The divergences are this report's list plus any contradicted declaration
    the audit recorded. "Regression not assessed" (the report's
    `regression.assessed: false`) is not a divergence; say so in the summary.
@@ -56,10 +62,11 @@ earlier session. Dates are UTC (`date -u +%F`).
 
 ## After all repositories
 
-1. Commit the new `audits/` records on the branch from step 2 and open or
-   update one doc-watson pull request for them. It references the open
-   doc-watson issue titled `Sweep: audit records`; create that issue once if
-   it does not exist. Never push to `main`.
+1. Commit the new records on the `<registry>` branch from step 3 and open or
+   update one `dhk/doc-watson-audit` pull request for them. It references the
+   open issue in that repository titled `Sweep: audit records`; create that
+   issue once if it does not exist. Never push to `main`, and never commit an
+   audit record to doc-watson.
 2. End with a summary table: repository, enrolled, divergences, regression
    assessed or not, actions taken, and anything unreachable or skipped.
 
@@ -68,7 +75,7 @@ earlier session. Dates are UTC (`date -u +%F`).
 - Merge anything, or mark a draft ready for review.
 - Edit a `.doc-watson.yml`. A stale standard, a stale `last_audit`, or a
   contradicted declaration is a question for the owner in the issue.
-- Change a checkout's branch or working tree; audit the detached worktree.
+- Change an audited repository's checkout, its branch or working tree; audit the detached worktree.
 - Put a credential or its contents in an issue; report a possible credential
   by file path only.
 - Run a repository's own pipelines, installs, or anything that calls a paid

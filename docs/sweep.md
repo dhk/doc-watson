@@ -2,9 +2,10 @@
 
 > **Status: built, not yet scheduled.** The deterministic checks
 > ([`sweep/check.ts`](../sweep/check.ts), `npm run sweep:check`), the scope
-> ([`sweep/scope.json`](../sweep/scope.json)), the audit registry
-> ([`audits/`](../audits/README.md)) and the routine a scheduled session follows
-> ([`sweep/ROUTINE.md`](../sweep/ROUTINE.md)) exist. No schedule runs them yet.
+> ([`sweep/scope.json`](../sweep/scope.json)) and the routine a scheduled
+> session follows ([`sweep/ROUTINE.md`](../sweep/ROUTINE.md)) exist, and the
+> audit registry is the private repository `dhk/doc-watson-audit`. No schedule
+> runs them yet.
 
 The sweep keeps enrolled repositories aligned with the standard without making
 decisions that belong to their owners.
@@ -23,8 +24,13 @@ outside it is not swept even if it is enrolled.
    using the declared level, trigger decisions, and exemptions.
 3. Compare the result with the previous audit and with the declarations,
    using the standard's [divergence](standard.md#divergence) rules.
-4. Record the audit in this repository, not in the target (the audit
-   inventory already refuses to write inside the repository it audits).
+4. Record the audit in the private registry `dhk/doc-watson-audit`, under
+   `audits/<owner>/<repo>/<YYYY-MM-DD>/`. Never in the target (the audit
+   inventory already refuses to write inside the repository it audits), and
+   never in this repository: it is public, an audit describes a repository's
+   contents, and several repositories in scope are private
+   ([architecture](architecture.md): private evidence must not leak into
+   public artifacts).
 5. Act on divergence as the repository's `on_drift` allows.
 
 ## Acting on divergence
