@@ -1,0 +1,61 @@
+# Doc Watson enrollment: this repository's documentation contract.
+# Schema: https://github.com/dhk/doc-watson/blob/main/schemas/enrollment.schema.json
+# Level, audience, trigger decisions and exemptions are owner-declared facts.
+# Tools may question them; only the owner changes them.
+# Declared by the owner 2026-09-28 from the baseline audit's drafts.
+
+schema: 1
+standard: 0.3.0 # standard version last audited against
+level: 3 # declared by the owner, 2026-09-28; note the Level 3 contribution-path requirement against contributing: false
+audience: Individual maintainers who run the skills or MCP server with an agent, contributors to the standard, and agents that return to run its sweep.
+
+# One decision per trigger rule, each with its reason.
+triggers:
+  install-guide:
+    applies: true
+    reason: Two supported paths (skills copied into an agent harness; MCP server from source with client configuration, docs/mcp-server.md:146-192).
+  user-guides:
+    applies: true
+    reason: Running audit, propose and construct end to end needs more than a compact example (docs/workflow.md; skills/*/SKILL.md).
+  architecture:
+    applies: true
+    reason: Four surfaces (standard, skills, MCP server, enrollment and sweep) do not fit one read; docs/architecture.md holds the model.
+  adrs:
+    applies: true
+    reason: Decisions with real alternatives exist, e.g. audits kept in this registry rather than the target (audits/README.md:3-5) and mechanical-only sweep PRs (docs/sweep.md:38-42).
+  agent-memory:
+    applies: true
+    reason: Agents return across sessions and a scheduled session runs the sweep (AGENTS.md; sweep/ROUTINE.md).
+  machine-contracts:
+    applies: true
+    reason: Programs parse schemas/*.schema.json, SKILL.md frontmatter, .doc-watson.yml files (sweep/check.ts) and the MCP tool contracts (docs/mcp-server.md).
+  codeowners:
+    applies: false
+    reason: One maintainer; .github/CODEOWNERS:2-4 says it documents authority for a solo maintainer rather than routing shared review.
+  contributing:
+    applies: false
+    reason: Outside contributions are not invited (owner, 2026-09-28).
+  governance:
+    applies: false
+    reason: One maintainer (.github/CODEOWNERS:2-4).
+  roadmap:
+    applies: true
+    reason: Public early project whose direction (later CI enforcement, unscheduled sweep, placeholder MCP tools) is scattered across README.md:12, docs/architecture.md:23-28 and docs/README.md:15-18.
+  runbooks:
+    applies: false
+    reason: Nothing pages anyone; the sweep is built but not scheduled (docs/sweep.md:3).
+  handover:
+    applies: false
+    reason: No other party operates this repository.
+
+# Concerns deliberately not met. Truthfulness, hygiene and duplication, and
+# maintenance and verification cannot be exempted.
+exemptions: []
+
+last_audit:
+  revision: "30b6614"
+  date: "2026-09-28"
+  record: https://github.com/dhk/doc-watson-audit/tree/main/audits/dhk/doc-watson/2026-09-28
+
+# What a sweep may do on divergence: issue-and-draft-pr, issue, or report.
+on_drift: issue-and-draft-pr
