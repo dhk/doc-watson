@@ -4,10 +4,13 @@
  * Covers every divergence rule in docs/standard.md that needs no judgement:
  * invalid enrollment, stale standard, hygiene failures, and score regression
  * against a previous scorecard. Contradicted declarations need an agent
- * audit (repo-doc-audit) and are reported there, not here.
+ * audit (repo-doc-audit); the routine adds them from the audit, so this
+ * script never emits that kind. An unenrolled repository is not a
+ * divergence: the report says enrolled: false and the sweep skips it.
  *
  * Usage:
  *   npm run sweep:check -- --repo <checkout> [--current <scorecard.csv>] [--previous <scorecard.csv> | --registry <audits/owner/repo>]
+ * Exit codes: 0 no divergence (or not enrolled), 1 divergence, 2 usage or environment error.
  */
 import { spawnSync } from "node:child_process";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
@@ -18,11 +21,12 @@ import { parse } from "yaml";
 export const DOC_WATSON_ROOT = path.join(import.meta.dirname, "..");
 
 export type DivergenceKind =
-  | "not-enrolled"
   | "invalid-enrollment"
   | "stale-standard"
   | "hygiene-failure"
-  | "regression";
+  | "regression"
+  /** From the agent audit, never from this script. */
+  | "contradicted-declaration";
 
 export type Divergence = {
   kind: DivergenceKind;
@@ -35,6 +39,9 @@ export type Report = {
   repository: string;
   enrolled: boolean;
   onDrift: string | null;
+  /** The scorecard compared against, or why regression was not assessed. */
+  regression:
+    { assessed: true; previous: string } | { assessed: false; reason: string };
   divergences: Divergence[];
 };
 
@@ -61,17 +68,7 @@ export function checkEnrollment(
 ): { enrolled: boolean; onDrift: string | null; divergences: Divergence[] } {
   const file = path.join(repo, ".doc-watson.yml");
   if (!existsSync(file)) {
-    return {
-      enrolled: false,
-      onDrift: null,
-      divergences: [
-        {
-          kind: "not-enrolled",
-          detail: "no .doc-watson.yml",
-          mechanical: false,
-        },
-      ],
-    };
+    return { enrolled: false, onDrift: null, divergences: [] };
   }
   const schema = JSON.parse(
     readFileSync(path.join(root, "schemas/enrollment.schema.json"), "utf8"),
@@ -136,6 +133,11 @@ export function checkHygiene(
     "skills/repo-doc-construct/scripts/check_docs.py",
   );
   const result = spawnSync("python3", [script, repo], { encoding: "utf8" });
+  if (result.error || result.status === null || result.status > 1) {
+    throw new Error(
+      `check_docs.py could not run: ${result.error?.message ?? result.stderr.trim() ?? `status ${result.status}`}`,
+    );
+  }
   if (result.status === 0) return [];
   const lines = `${result.stdout}${result.stderr}`
     .split("\n")
@@ -252,6 +254,10 @@ export function sweepRepository(options: {
   const root = options.root ?? DOC_WATSON_ROOT;
   const enrollment = checkEnrollment(options.repo, root);
   const divergences = [...enrollment.divergences];
+  let regression: Report["regression"] = {
+    assessed: false,
+    reason: "not enrolled",
+  };
   if (enrollment.enrolled) {
     divergences.push(...checkHygiene(options.repo, root));
     const previous =
@@ -259,7 +265,12 @@ export function sweepRepository(options: {
       (options.registry
         ? latestScorecard(options.registry, options.current)
         : null);
-    if (options.current && previous) {
+    if (!options.current) {
+      regression = { assessed: false, reason: "no --current scorecard" };
+    } else if (!previous) {
+      regression = { assessed: false, reason: "no previous scorecard" };
+    } else {
+      regression = { assessed: true, previous: path.resolve(previous) };
       divergences.push(
         ...checkRegression(
           readFileSync(previous, "utf8"),
@@ -272,6 +283,7 @@ export function sweepRepository(options: {
     repository: path.resolve(options.repo),
     enrolled: enrollment.enrolled,
     onDrift: enrollment.onDrift,
+    regression,
     divergences,
   };
 }
@@ -294,7 +306,12 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     const value = argument(key);
     if (value) options[key] = value;
   }
-  const report = sweepRepository(options);
-  process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);
-  process.exit(report.divergences.length === 0 ? 0 : 1);
+  try {
+    const report = sweepRepository(options);
+    process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);
+    process.exit(report.divergences.length === 0 ? 0 : 1);
+  } catch (error) {
+    process.stderr.write(`sweep:check: ${(error as Error).message}\n`);
+    process.exit(2);
+  }
 }

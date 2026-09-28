@@ -35,10 +35,11 @@ outside it is not swept even if it is enrolled.
 | `issue`              | Open or update one issue labelled `doc-watson`                                                                 |
 | `report`             | Record the finding in this repository only                                                                     |
 
-Mechanical fixes are the ones the evidence alone settles: a broken link, a
-stale copy of the standard, a hygiene failure. A contradicted declaration, a
-new level, or any purpose or rationale is written into the issue as a single
-bounded question for the owner and never into a pull request.
+Mechanical fixes are the ones the evidence alone settles: a broken link or
+anchor. Everything else goes into the issue as a question for the owner and
+never into a pull request, including a stale standard version (fixing it means
+editing `.doc-watson.yml`), a possible credential, a regression, a
+contradicted declaration, a new level, or any purpose or rationale.
 
 The sweep never merges, never marks a draft ready for review, never edits
 `.doc-watson.yml`, and keeps at most one open issue and one open draft per

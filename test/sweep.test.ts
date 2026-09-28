@@ -47,12 +47,29 @@ const HEADER =
   "concern,applicable,score,max_score,proposed_score,status,evidence,recommendation\n";
 
 describe("sweep checks", () => {
-  it("reports an unenrolled repository and nothing else", async () => {
+  it("reports an unenrolled repository as not enrolled, not as divergence", async () => {
     const report = sweepRepository({
       repo: await repo({ "README.md": "# x\n" }),
     });
-    expect(report.enrolled).toBe(false);
-    expect(kinds(report)).toEqual(["not-enrolled"]);
+    expect(report).toMatchObject({
+      enrolled: false,
+      divergences: [],
+      regression: { assessed: false, reason: "not enrolled" },
+    });
+  });
+
+  it("fails loudly when the hygiene checker cannot run", async () => {
+    const root = await repo({
+      "docs/standard.md": "**Version:** 0.3.0\n",
+      "schemas/enrollment.schema.json": await readFile(
+        path.join(import.meta.dirname, "../schemas/enrollment.schema.json"),
+        "utf8",
+      ),
+    });
+    const target = await repo({ ".doc-watson.yml": await template("0.3.0") });
+    expect(() => sweepRepository({ repo: target, root })).toThrow(
+      /check_docs\.py could not run/,
+    );
   });
 
   it("passes a clean enrolled repository", async () => {
@@ -65,6 +82,7 @@ describe("sweep checks", () => {
     expect(report).toMatchObject({
       enrolled: true,
       onDrift: "issue-and-draft-pr",
+      regression: { assessed: false, reason: "no --current scorecard" },
     });
     expect(report.divergences).toEqual([]);
   });
