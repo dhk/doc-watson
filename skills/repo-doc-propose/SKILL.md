@@ -21,7 +21,7 @@ Require an audit or reconstruct equivalent evidence. Read [proposal-contract.md]
 6. Specify diagrams by question answered: “So what?” covers user, need, value, and outcome; architecture covers boundaries, inputs, transformations, outputs, external systems, and trust boundaries.
 7. Preserve provenance for every proposed claim and identify the evidence needed to promote `unknown` or `proposed` claims.
 8. Present alternatives only when they change scope or audience materially. For a sale candidate, separate internal baseline from handover readiness.
-9. Produce an issue-ready plan with acceptance criteria, validation, exclusions, dependencies, and links to related work, using [the proposal template](https://github.com/dhk/doc-watson/blob/main/templates/proposal.template.md), which has one section per contract item.
+9. Produce an issue-ready plan with acceptance criteria, validation, exclusions, dependencies, and links to related work, using [the proposal template](references/proposal.template.md), which has one section per contract item.
 10. Fill `proposed_score` in the audit's `scorecard.csv`: the score each applicable concern will reach if the proposal is implemented. Leave it blank for n/a rows.
 
 ## Approval boundary

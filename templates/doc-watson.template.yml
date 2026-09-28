@@ -52,11 +52,11 @@ triggers:
 exemptions: []
 # - concern: ownership-and-contribution
 #   reason: Why this concern is deliberately not met.
-#   review_by: 2027-03-31
+#   review_by: "2027-03-31"
 
 last_audit:
   revision: "0000000" # quoted: an all-digit hash would otherwise read as a number
-  date: 2026-01-01
+  date: "2026-01-01" # quoted: YAML 1.1 parsers would read an unquoted date as a date, not text
   record: https://github.com/dhk/doc-watson # where the audit is kept
 
 # What a sweep may do on divergence: issue-and-draft-pr, issue, or report.

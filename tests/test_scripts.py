@@ -184,6 +184,10 @@ class EndToEndRegressionTests(unittest.TestCase):
                                      "SKILL.md": "documentation", "notes.rst": "documentation"})
             self.assertEqual(data["counts"]["enrollment"], 1)
             self.assertEqual(data["state"]["kind"], "directory-snapshot")
+            self.assertRegex(data["state"]["reference"], r"^sha256:[0-9a-f]{64}$")
+            self.assertEqual(json.loads(run(INVENTORY, root).stdout)["state"], data["state"])
+            (root / "DESIGN.md").write_text("changed\n")
+            self.assertNotEqual(json.loads(run(INVENTORY, root).stdout)["state"]["reference"], data["state"]["reference"])
 
     def test_inventory_uses_the_committed_tree_and_records_the_commit(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -197,7 +201,8 @@ class EndToEndRegressionTests(unittest.TestCase):
             head = subprocess.run(git + ["rev-parse", "HEAD"], check=True, capture_output=True, text=True).stdout.strip()
             data = json.loads(run(INVENTORY, root).stdout)
             self.assertEqual([item["path"] for item in data["files"]], ["README.md"])
-            self.assertEqual(data["state"], {"kind": "git-commit", "reference": head, "dirty": True, "source": "git ls-files"})
+            self.assertEqual(data["state"], {"kind": "git-commit", "reference": head, "dirty": True})
+            self.assertEqual(data["listing"], "git ls-files")
 
 class AnchorTests(unittest.TestCase):
     """check_docs.py checks #anchors against GitHub's heading slugs (#12)."""

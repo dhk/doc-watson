@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Create a deterministic, read-only repository documentation inventory."""
 import argparse
+import hashlib
 import json
 import os
 import subprocess
@@ -49,6 +50,17 @@ def walked_files(root):
             if path.is_file() and not path.is_symlink():
                 yield path.relative_to(root).as_posix()
 
+def snapshot_id(root, paths):
+    """Stable identifier for a non-Git directory: SHA-256 over every included file's path and content hash."""
+    digest = hashlib.sha256()
+    for rel in sorted(paths):
+        if excluded(rel.split("/")):
+            continue
+        path = root / rel
+        if path.is_file() and not path.is_symlink():
+            digest.update(rel.encode() + b"\0" + hashlib.sha256(path.read_bytes()).hexdigest().encode() + b"\n")
+    return "sha256:" + digest.hexdigest()
+
 def classify(rel):
     parts = rel.split("/")
     name = parts[-1]
@@ -87,11 +99,13 @@ def main():
     if tracked is not None:
         head = (git(root, "rev-parse", "HEAD") or "").strip() or None
         dirty = bool((git(root, "status", "--porcelain", "--", ".") or "").strip())
-        state = {"kind": "git-commit", "reference": head, "dirty": dirty, "source": "git ls-files"}
+        state = {"kind": "git-commit", "reference": head, "dirty": dirty}
+        listing = "git ls-files"
     else:
-        state = {"kind": "directory-snapshot", "reference": None, "dirty": None, "source": "filesystem walk"}
+        state = {"kind": "directory-snapshot", "reference": snapshot_id(root, paths), "dirty": None}
+        listing = "filesystem walk"
     kinds = ("documentation", "manifest", "enrollment")
-    result = {"repository": str(root), "state": state, "files": files, "counts": {kind: sum(item["kind"] == kind for item in files) for kind in kinds}}
+    result = {"repository": str(root), "state": state, "listing": listing, "files": files, "counts": {kind: sum(item["kind"] == kind for item in files) for kind in kinds}}
     output = json.dumps(result, indent=2) + "\n"
     if args.output:
         output_path = Path(args.output).resolve()
