@@ -1,9 +1,10 @@
 # Sweep
 
-> **Status: proposed** ([#8](https://github.com/dhk/doc-watson/issues/8)). Nothing
-> described here runs yet. The enrollment file and the definition of
-> divergence it relies on are part of the standard; this page is the contract
-> the sweep will be built to.
+> **Status: built, not yet scheduled.** The deterministic checks
+> ([`sweep/check.ts`](../sweep/check.ts), `npm run sweep:check`), the scope
+> ([`sweep/scope.json`](../sweep/scope.json)), the audit registry
+> ([`audits/`](../audits/README.md)) and the routine a scheduled session follows
+> ([`sweep/ROUTINE.md`](../sweep/ROUTINE.md)) exist. No schedule runs them yet.
 
 The sweep keeps enrolled repositories aligned with the standard without making
 decisions that belong to their owners.
@@ -34,10 +35,11 @@ outside it is not swept even if it is enrolled.
 | `issue`              | Open or update one issue labelled `doc-watson`                                                                 |
 | `report`             | Record the finding in this repository only                                                                     |
 
-Mechanical fixes are the ones the evidence alone settles: a broken link, a
-stale copy of the standard, a hygiene failure. A contradicted declaration, a
-new level, or any purpose or rationale is written into the issue as a single
-bounded question for the owner and never into a pull request.
+Mechanical fixes are the ones the evidence alone settles: a broken link or
+anchor. Everything else goes into the issue as a question for the owner and
+never into a pull request, including a stale standard version (fixing it means
+editing `.doc-watson.yml`), a possible credential, a regression, a
+contradicted declaration, a new level, or any purpose or rationale.
 
 The sweep never merges, never marks a draft ready for review, never edits
 `.doc-watson.yml`, and keeps at most one open issue and one open draft per

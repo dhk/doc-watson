@@ -33,6 +33,7 @@
     "format:check": "prettier --check .",
     "lint": "eslint .",
     "start": "node dist/server.js",
+    "sweep:check": "tsx sweep/check.ts",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },
