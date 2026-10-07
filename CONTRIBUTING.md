@@ -1,7 +1,15 @@
 # Contributing
 
-Doc Watson is an early open-source project. Issues and pull requests are
-welcome, but its public interfaces are still taking shape.
+Doc Watson is an early open-source project. Its public interfaces are still
+taking shape.
+
+## How contributions are accepted
+
+Contributions from anyone are welcome: issues, fixes, documentation and
+ideas. Every change is merged only after the maintainer, [@dhk](https://github.com/dhk),
+reviews and approves it. Opening a pull request is an offer, not a guarantee
+that it will be merged; a change may be declined or reshaped to fit the
+project's direction.
 
 ## Before making a change
 
