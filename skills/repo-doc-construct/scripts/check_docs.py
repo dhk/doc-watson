@@ -14,7 +14,14 @@ FENCE = re.compile(r"^ {0,3}(```|~~~).*?^ {0,3}\1[^\n]*$", re.M | re.S)
 INLINE_CODE = re.compile(r"(`+)[^`\n].*?\1")
 SCHEME = re.compile(r"^[A-Za-z][A-Za-z0-9+.-]*:")
 
-SECRET_KEY = r"[A-Za-z0-9_-]*(?:api[_-]?key|secret|token|passw(?:or)?d)[A-Za-z0-9_-]*"
+SECRET_WORD = r"(?:api[_-]?key|secret|token|passw(?:or)?d)"
+# Identifiers that name a quantity or collection of the word, not a credential:
+# tokens, max_tokens, token_count, password_length.
+NON_SECRET_SUFFIX = r"(?:s|counts?|limits?|len|length|usage|budgets?|types?|used|total)"
+# The secret word must end its identifier or be followed by a separator, so
+# "tokens" and "tokenizer" are not keys, and the next segment must not be a
+# non-secret suffix. AWS_SECRET_ACCESS_KEY and api_key still match.
+SECRET_KEY = rf"[A-Za-z0-9_-]*{SECRET_WORD}(?![A-Za-z0-9])(?![_-]{NON_SECRET_SUFFIX}(?![A-Za-z0-9]))[A-Za-z0-9_-]*"
 SECRET_ASSIGNMENT = re.compile(rf"""(?i)["']?{SECRET_KEY}["']?\s*[:=]\s*["']?(?P<value>[^\s"'`,;]{{12,}})""")
 SECRET_SHAPES = re.compile(
     r"(?i:authorization:\s*bearer\s+[A-Za-z0-9._~+/-]{12,})"
@@ -24,6 +31,8 @@ SECRET_SHAPES = re.compile(
 PLACEHOLDER = re.compile(r"(?i)your|replace|example|placeholder|changeme|dummy|sample|redacted|xxxx|\*\*\*|\.\.\.|<|\$\{|\$\(")
 # A slash-separated word path with no digits reads as a file or prose path, not a credential.
 PATH_LIKE = re.compile(r"[A-Za-z_.-]+(?:/[A-Za-z_.-]+)+")
+# A call or grouped expression, e.g. cmd.strip().split(), is code, not a literal credential.
+CODE_LIKE = re.compile(r"[()]")
 IGNORED_DIRECTORIES = {".git", "node_modules", "vendor", ".venv"}
 
 def markdown_files(root):
@@ -38,7 +47,7 @@ def has_secret(content):
         return True
     for match in SECRET_ASSIGNMENT.finditer(content):
         value = match.group("value")
-        if not PLACEHOLDER.search(value) and not PATH_LIKE.fullmatch(value):
+        if not PLACEHOLDER.search(value) and not PATH_LIKE.fullmatch(value) and not CODE_LIKE.search(value):
             return True
     return False
 
