@@ -22,7 +22,7 @@ triggers:
     reason: Four surfaces (standard, skills, MCP server, enrollment and sweep) do not fit one read; docs/architecture.md holds the model.
   adrs:
     applies: true
-    reason: Decisions with real alternatives exist, e.g. audits kept in this registry rather than the target (audits/README.md:3-5) and mechanical-only sweep PRs (docs/sweep.md:38-42).
+    reason: Decisions with real alternatives exist, e.g. audit records kept in the private registry rather than the target or this public repository (docs/sweep.md:27-33) and mechanical-only sweep PRs (docs/sweep.md:38-48).
   agent-memory:
     applies: true
     reason: Agents return across sessions and a scheduled session runs the sweep (AGENTS.md; sweep/ROUTINE.md).
