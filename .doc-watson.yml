@@ -40,10 +40,10 @@ triggers:
     reason: One maintainer (.github/CODEOWNERS:2-4).
   roadmap:
     applies: true
-    reason: Public early project whose direction (later CI enforcement, unscheduled sweep, placeholder MCP tools) is scattered across README.md:12, docs/architecture.md:23-28 and docs/README.md:15-18.
+    reason: Public early project whose direction (later CI enforcement, placeholder MCP tools) is scattered across README.md:12, docs/architecture.md:23-28 and docs/README.md:15-18.
   runbooks:
     applies: false
-    reason: Nothing pages anyone; the sweep is built but not scheduled (docs/sweep.md:3).
+    reason: Nothing pages anyone; the weekly sweep reports by issue and draft pull request, not by alert (docs/sweep.md).
   handover:
     applies: false
     reason: No other party operates this repository.
