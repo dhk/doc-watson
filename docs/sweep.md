@@ -1,11 +1,11 @@
 # Sweep
 
-> **Status: built, not yet scheduled.** The deterministic checks
+> **Status: scheduled and running weekly** (Sundays 7:54pm America/Los_Angeles;
+> first run 2026-10-05). The deterministic checks
 > ([`sweep/check.ts`](../sweep/check.ts), `npm run sweep:check`), the scope
-> ([`sweep/scope.json`](../sweep/scope.json)) and the routine a scheduled
-> session follows ([`sweep/ROUTINE.md`](../sweep/ROUTINE.md)) exist, and the
-> audit registry is the private repository `dhk/doc-watson-audit`. No schedule
-> runs them yet.
+> ([`sweep/scope.json`](../sweep/scope.json)) and the routine the scheduled
+> session follows ([`sweep/ROUTINE.md`](../sweep/ROUTINE.md)) live here; the
+> audit records go to the private registry `dhk/doc-watson-audit`.
 
 The sweep keeps enrolled repositories aligned with the standard without making
 decisions that belong to their owners.
@@ -39,7 +39,7 @@ outside it is not swept even if it is enrolled.
 | -------------------- | -------------------------------------------------------------------------------------------------------------- |
 | `issue-and-draft-pr` | Open or update one issue labelled `doc-watson`, and open or update one draft pull request for mechanical fixes |
 | `issue`              | Open or update one issue labelled `doc-watson`                                                                 |
-| `report`             | Record the finding in this repository only                                                                     |
+| `report`             | Record the finding in the private registry `dhk/doc-watson-audit` only                                         |
 
 Mechanical fixes are the ones the evidence alone settles: a broken link or
 anchor. Everything else goes into the issue as a question for the owner and

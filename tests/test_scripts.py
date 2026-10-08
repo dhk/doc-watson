@@ -118,6 +118,11 @@ class ReviewRegressionTests(unittest.TestCase):
             "'password': 'q8w7e6r5t4y3u2i1'",
             "Authorization: Bearer abcdefghijklmnopqrstu",
             "token ghp_abcdefghijklmnopqrstuvwxyz0123456789",
+            "ANTHROPIC_API_KEY=sk-ant-api03-q8w7e6r5t4y3u2i1o0p9",
+            "aws_access_key_id = AKIAQ3EGRV7XKM2PLD4N",
+            "API_KEY=q8w7e6r5t4y3u2i1o0p9z",
+            "access_token = 'q8w7e6r5t4y3u2i1o0p9'",
+            "GITHUB_TOKEN_VALUE=q8w7e6r5t4y3u2i1o0p9",
         ]
         placeholders = [
             "GITHUB_TOKEN=your_token_here_xyz",
@@ -126,6 +131,13 @@ class ReviewRegressionTests(unittest.TestCase):
             "password: changeme-in-production",
             "secret: docs/secrets-handling.md",
             "token: environment/variable/path",
+            # Ordinary words and identifiers (dhk/adventures-in-ai run-analytics SKILL.md).
+            "tokens = cmd.strip().split()",
+            "max_tokens=100000000000000",
+            "token_count: 123456789012345",
+            "password_length = 1234567890123",
+            "tokenizer=q8w7e6r5t4y3u2i1o0p9",
+            "secret = load_secret(environment_name)",
         ]
         for line, expected in [(line, True) for line in real] + [(line, False) for line in placeholders]:
             with self.subTest(line=line), tempfile.TemporaryDirectory() as directory:
