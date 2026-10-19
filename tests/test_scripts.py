@@ -123,6 +123,9 @@ class ReviewRegressionTests(unittest.TestCase):
             "API_KEY=q8w7e6r5t4y3u2i1o0p9z",
             "access_token = 'q8w7e6r5t4y3u2i1o0p9'",
             "GITHUB_TOKEN_VALUE=q8w7e6r5t4y3u2i1o0p9",
+            # A URL is flagged for the credential it carries, not for being a URL.
+            "SECRET_URL=https://deploy:q8w7e6r5t4y3u2i1@example.org/hook",
+            "TOKEN_ENDPOINT=https://auth.host/cb?access_token=q8w7e6r5t4y3u2i1o0p9",
         ]
         placeholders = [
             "GITHUB_TOKEN=your_token_here_xyz",
@@ -138,6 +141,9 @@ class ReviewRegressionTests(unittest.TestCase):
             "password_length = 1234567890123",
             "tokenizer=q8w7e6r5t4y3u2i1o0p9",
             "secret = load_secret(environment_name)",
+            # An endpoint URL (dhk/wingman docs/SERVER.md).
+            "WINGMAN_SHARED_OAUTH_WEB_TOKEN_URL=https://oauth2.googleapis.com/token",
+            "TOKEN_URL=https://deploy:${DEPLOY_PASSWORD}@example.org/hook",
         ]
         for line, expected in [(line, True) for line in real] + [(line, False) for line in placeholders]:
             with self.subTest(line=line), tempfile.TemporaryDirectory() as directory:
