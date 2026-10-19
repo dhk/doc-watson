@@ -33,6 +33,9 @@ PLACEHOLDER = re.compile(r"(?i)your|replace|example|placeholder|changeme|dummy|s
 PATH_LIKE = re.compile(r"[A-Za-z_.-]+(?:/[A-Za-z_.-]+)+")
 # A call or grouped expression, e.g. cmd.strip().split(), is code, not a literal credential.
 CODE_LIKE = re.compile(r"[()]")
+# A URL value, e.g. TOKEN_URL=https://host/token, names an endpoint; only its userinfo or query can hold a credential.
+URL = re.compile(r"(?i)[a-z][a-z0-9+.-]*://(?P<rest>.*)")
+URL_PASSWORD = re.compile(r"[^/?#@:]*:(?P<password>[^/?#@]+)@")
 IGNORED_DIRECTORIES = {".git", "node_modules", "vendor", ".venv"}
 
 def markdown_files(root):
@@ -47,6 +50,12 @@ def has_secret(content):
         return True
     for match in SECRET_ASSIGNMENT.finditer(content):
         value = match.group("value")
+        url = URL.fullmatch(value)
+        if url:
+            password = URL_PASSWORD.match(url.group("rest"))
+            if (password and not PLACEHOLDER.search(password.group("password"))) or has_secret(url.group("rest")):
+                return True
+            continue
         if not PLACEHOLDER.search(value) and not PATH_LIKE.fullmatch(value) and not CODE_LIKE.search(value):
             return True
     return False
